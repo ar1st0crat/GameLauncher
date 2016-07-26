@@ -144,6 +144,7 @@ namespace GameLauncher.Util
                 {
                     LaunchDate = l.LaunchTime.ToString("dd MMMM yyyy"),
                     LaunchTime = l.LaunchTime.ToShortTimeString(),
+                    QuitTime = l.QuitTime.ToShortTimeString(),
                     Game = db.Get<Game>(l.GameId).Name
                 }).ToList();
             }
@@ -189,6 +190,7 @@ namespace GameLauncher.Util
                                  {
                                      LaunchDate = l.LaunchTime.ToString("dd MMMM yyyy"),
                                      LaunchTime = l.LaunchTime.ToShortTimeString(),
+                                     QuitTime = l.QuitTime.ToShortTimeString(),
                                      Game = db.Get<Game>(l.GameId).Name
                                  });
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using GameLauncher.ViewModel;
+using ListView = System.Windows.Controls.ListView;
 
 namespace GameLauncher.View
 {
@@ -55,6 +57,16 @@ namespace GameLauncher.View
             CalendarStartPeriod.SetSelectionRange(startOfMonth, startOfMonth);
 
             ((StatsViewModel)DataContext).FillDataInPeriod(startOfMonth, now);
+        }
+
+        // Auto-compute the width of the last column:
+        // subtract the width of vertical scrollbar and the widths of other columns (total: 220 pixels)
+        private void LaunchListView_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ListView listView = sender as ListView;
+            GridView gridView = listView.View as GridView;
+
+            gridView.Columns[3].Width = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth - 220;
         }
     }
 }

@@ -4,6 +4,7 @@
     {
         public string LaunchDate { get; set; }
         public string LaunchTime { get; set; }
+        public string QuitTime { get; set; }
         public string Game { get; set; }
     }
 }

@@ -187,14 +187,19 @@
                     Click="LastMonthClick">За месяц</Button>
         </StackPanel>
 
-        <Rectangle Opacity="0.3" Grid.Column="1" Fill="White" Margin="10" RadiusX="10" RadiusY="10" />
+        <Rectangle Grid.Column="1" 
+                   Opacity="0.3" 
+                   Fill="White" 
+                   Margin="10" 
+                   RadiusX="10" RadiusY="10" />
         <ListView Grid.Column="1"
                   ItemsSource="{Binding Launches}"
                   Margin="20"
                   Foreground="White"
                   Background="Transparent"
                   BorderThickness="0"
-                  HorizontalAlignment="Stretch">
+                  HorizontalAlignment="Stretch"
+                  SizeChanged="LaunchListView_OnSizeChanged">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Дата" 
@@ -203,8 +208,11 @@
                     <GridViewColumn Header="Время" 
                                     Width="60"
                                     DisplayMemberBinding="{Binding LaunchTime}" />
+                    <GridViewColumn Header="Время" 
+                                    Width="60"
+                                    DisplayMemberBinding="{Binding QuitTime}" />
                     <GridViewColumn Header="Игра" 
-                                    Width="auto"
+                                    Width="190"
                                     DisplayMemberBinding="{Binding Game}" />
                 </GridView>
             </ListView.View>
