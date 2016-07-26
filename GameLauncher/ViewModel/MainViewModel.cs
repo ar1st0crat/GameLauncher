@@ -40,6 +40,7 @@ namespace GameLauncher.ViewModel
         }
 
         private int _selectedIndex = -1;
+        private int _playingGameId;
 
         // pagination:
         private const int GAMES_PER_PAGE = 6;
@@ -379,6 +380,8 @@ namespace GameLauncher.ViewModel
                 return;
             }
 
+            _playingGameId = SelectedGame.Id;
+
             _webCamRecorder.Start(SelectedGame);
 
             // prepare and start timer
@@ -400,6 +403,7 @@ namespace GameLauncher.ViewModel
             // 2
             if (!_gameProcess.HasExited)
             {
+                // first try killing process gently
                 if (!_gameProcess.CloseMainWindow())
                 {
                     /*
@@ -428,7 +432,7 @@ namespace GameLauncher.ViewModel
             try
             {
                 var db = new DatabaseManager();
-                db.AddLaunch(SelectedGame.Id, _elapsedTime);
+                db.AddLaunch(_playingGameId, _elapsedTime);
             }
             catch (Exception ex)
             {
