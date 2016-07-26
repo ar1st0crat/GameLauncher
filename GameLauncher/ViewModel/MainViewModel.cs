@@ -96,7 +96,7 @@ namespace GameLauncher.ViewModel
 
             if (!_webCamRecorder.Initialize())
             {
-                MessageBox.Show("Не удалось обнаружить устройство записи!\nЗапись не будет производиться",
+                MessageBox.Show("FFmpeg не установлен или не удалось обнаружить устройство записи! Запись не будет производиться",
                     "Внимание!",
                     MessageBoxButton.OK, 
                     MessageBoxImage.Information);

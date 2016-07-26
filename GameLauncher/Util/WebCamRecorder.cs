@@ -7,6 +7,9 @@ using GameLauncher.Model;
 
 namespace GameLauncher.Util
 {
+    /// <summary>
+    /// WebCam video and audio recorder based on FFmpeg
+    /// </summary>
     class WebCamRecorder
     {
         private Process _recordProcess;
@@ -18,6 +21,13 @@ namespace GameLauncher.Util
 
         public bool Initialize()
         {
+            _isEnabled = false;
+
+            if (!File.Exists("ffmpeg.exe"))
+            {
+                return false;
+            }
+
             Directory.CreateDirectory("video");
 
             var infoProcess = new Process();
@@ -58,7 +68,6 @@ namespace GameLauncher.Util
             // return immediately
             if (posVideoSection < 0)
             {
-                _isEnabled = false;
                 return false;
             }
 
@@ -71,7 +80,6 @@ namespace GameLauncher.Util
             if (startPosVideoDeviceString < 0 ||
                 posAudioSection <= startPosVideoDeviceString)
             {
-                _isEnabled = false;
                 return false;
             }
             
