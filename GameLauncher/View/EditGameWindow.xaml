@@ -1,0 +1,63 @@
+﻿<Window x:Class="GameLauncher.View.EditGameWindow" x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Редактировать игру" 
+        SizeToContent="WidthAndHeight">
+    
+    <StackPanel>
+        <Grid Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0">Название</Label>
+            <Label Grid.Row="1" Grid.Column="0">Расположение</Label>
+            <Label Grid.Row="2" Grid.Column="0">Путь к картинке</Label>
+            <Label Grid.Row="3" Grid.Column="0">Таймер</Label>
+            <TextBox x:Name="NameTextBox" 
+                     Grid.Row="0" Grid.Column="1" 
+                     MinWidth="200" 
+                     Margin="10" 
+                     Text="{Binding Name, Mode=TwoWay}" />
+            <StackPanel Grid.Row="1" Grid.Column="1" 
+                        Orientation="Horizontal">
+                <TextBox x:Name="ExePathTextBox" 
+                         MinWidth="200" 
+                         Margin="10" 
+                         Text="{Binding ExePath, Mode=TwoWay}" />
+                <Button Height="25" Width="25"
+                        Click="OnBrowseExePath">...</Button>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="1" 
+                        Orientation="Horizontal">
+                <TextBox x:Name="ImagePathTextBox" 
+                         MinWidth="200" 
+                         Margin="10" 
+                         Text="{Binding ImagePath, Mode=TwoWay}" />
+                <Button Height="25" Width="25" 
+                        Click="OnBrowseImagePath">...</Button>
+            </StackPanel>
+            <TextBox x:Name="DurationTextBox" 
+                     Grid.Row="3" Grid.Column="1" 
+                     MinWidth="200" 
+                     Margin="10" 
+                     Text="{Binding Duration, Mode=TwoWay}" />
+        </Grid>
+        <DockPanel HorizontalAlignment="Right" 
+                   Margin="10">
+            <Button MinWidth="70" 
+                    Margin="5"
+                    IsDefault="True"
+                    Click="OnSave">Сохранить</Button>
+            <Button MinWidth="70"
+                    Margin="5" 
+                    Click="OnCancel">Отмена</Button>
+        </DockPanel>
+    </StackPanel>
+</Window>
