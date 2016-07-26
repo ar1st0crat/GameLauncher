@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
@@ -61,6 +62,13 @@ namespace GameLauncher.ViewModel
         
         // game process (exe)
         private Process _gameProcess;
+        
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private const int SW_HIDE = 0;
+        private const int SW_SHOWNORMAL = 1;
+        //private const int SW_SHOWMINIMIZED = 2;
 
         // timer:
         private readonly DispatcherTimer _timer = new DispatcherTimer();
@@ -325,6 +333,9 @@ namespace GameLauncher.ViewModel
 
         #endregion
 
+        /// <summary>
+        /// TODO: comment entire workflow
+        /// </summary>
         public void StartGame()
         {
             if (SelectedGame == null)
@@ -421,7 +432,7 @@ namespace GameLauncher.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Не удалось добавить информцию о новом запуске игры!\n" + ex.Message);
+                MessageBox.Show("Не удалось добавить информацию о новом запуске игры!\n" + ex.Message);
             }
             
             _elapsedTime = 0;
@@ -429,14 +440,33 @@ namespace GameLauncher.ViewModel
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            if (_gameProcess.HasExited || _elapsedTime == _duration)
+            if (_elapsedTime == _duration)
+            {
+                NotifyStopTrial();
+            }
+
+            if (_gameProcess != null && _gameProcess.HasExited)
             {
                 StopGame();
             }
-            else
+
+            _elapsedTime++;
+        }
+
+        private void NotifyStopTrial()
+        {
+            ShowWindow(_gameProcess.MainWindowHandle, SW_HIDE);
+            //ShowWindow(_gameProcess.MainWindowHandle, SW_SHOWMINIMIZED);
+
+            if (MessageBox.Show("Тестовый период завершен! Продолжить?", "Внимание!", 
+                                    MessageBoxButton.YesNo,
+                                    MessageBoxImage.Information) != MessageBoxResult.Yes)
             {
-                _elapsedTime++;
+                StopGame();
+                return;
             }
+
+            ShowWindow(_gameProcess.MainWindowHandle, SW_SHOWNORMAL); 
         }
 
         public void CleanUp()
