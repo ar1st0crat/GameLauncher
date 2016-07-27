@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
+using GameLauncher.Command;
 using GameLauncher.Model;
 using GameLauncher.Util;
 using Microsoft.Win32;
@@ -55,9 +57,30 @@ namespace GameLauncher.ViewModel
             }
         }
 
+        public ICommand SaveCommand { get; private set; }
+        public ICommand BrowseExeCommand { get; private set; }
+        public ICommand BrowseImageCommand { get; private set; }
+        public ICommand CancelCommand { get; private set; }
+
+        private bool? _dialogResult;
+        public bool? DialogResult
+        {
+            get { return _dialogResult; }
+            set
+            {
+                _dialogResult = value;
+                OnPropertyChanged("DialogResult");
+            }
+        }
+
 
         public EditGameViewModel(Game game = null)
         {
+            SaveCommand = new RelayCommand(SaveGame);
+            BrowseExeCommand = new RelayCommand(BrowseExePath);
+            BrowseImageCommand = new RelayCommand(BrowseImagePath);
+            CancelCommand = new RelayCommand(Cancel);
+
             if (game == null)
             {
                 return;
@@ -107,6 +130,8 @@ namespace GameLauncher.ViewModel
             {
                 UpdateGame();
             }
+
+            DialogResult = true;
         }
 
         public void InsertGame()
@@ -146,6 +171,11 @@ namespace GameLauncher.ViewModel
             {
                 MessageBox.Show("Не удалось обновить игру!\n" + ex.Message);
             }
+        }
+
+        private void Cancel()
+        {
+            DialogResult = false;
         }
 
 

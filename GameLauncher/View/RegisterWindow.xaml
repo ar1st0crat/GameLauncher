@@ -1,8 +1,14 @@
 ﻿<Window x:Class="GameLauncher.View.RegisterWindow"
+        x:Name="Window"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewModel="clr-namespace:GameLauncher.ViewModel"
         Title="Регистрация" 
         SizeToContent="WidthAndHeight">
+    
+    <Window.DataContext>
+        <viewModel:RegisterViewModel />
+    </Window.DataContext>
     
     <StackPanel>
         <Grid Margin="5"
@@ -21,13 +27,14 @@
             <Label Grid.Row="2" Grid.Column="0">Повтор пароля</Label>
             <TextBox x:Name="LoginTextBox" 
                      Grid.Row="0" Grid.Column="1" 
+                     Text="{Binding Login}"
                      MinWidth="200" 
                      Margin="10" />
-            <PasswordBox x:Name="PasswordTextBox" 
+            <PasswordBox x:Name="Password"
                          Grid.Row="1" Grid.Column="1" 
                          MinWidth="200" 
                          Margin="10" />
-            <PasswordBox x:Name="PasswordRepeatTextBox" 
+            <PasswordBox x:Name="RepeatPassword"
                          Grid.Row="2" Grid.Column="1" 
                          MinWidth="200" 
                          Margin="10" />
@@ -36,13 +43,15 @@
                    Margin="10">
             <Button MinWidth="70" 
                     Margin="5" 
-                    Click="OnOk">OK</Button>
+                    Command="{Binding UpdateCommand}"
+                    CommandParameter="{Binding ElementName=Window}">OK</Button>
             <Button MinWidth="70" 
                     Margin="5" 
-                    Click="OnCancel">Отмена</Button>
+                    Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding ElementName=Window}">Отмена</Button>
             <Button MinWidth="70" 
                     Margin="5" 
-                    Click="OnReset">Сброс</Button>
+                    Command="{Binding ResetCommand}">Сброс</Button>
         </DockPanel>
     </StackPanel>
 </Window>

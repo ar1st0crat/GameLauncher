@@ -197,9 +197,10 @@ namespace GameLauncher.ViewModel
                 Duration = 30
             };
 
-            EditGameWindow editGameWindow = new EditGameWindow(viewmodel)
+            EditGameWindow editGameWindow = new EditGameWindow
             {
-                Title = "Новая игра"
+                Title = "Новая игра",
+                DataContext = viewmodel
             };
 
             if (editGameWindow.ShowDialog() == true)
@@ -216,7 +217,7 @@ namespace GameLauncher.ViewModel
             }
 
             EditGameViewModel viewmodel = new EditGameViewModel(SelectedGame);
-            EditGameWindow editGameWindow = new EditGameWindow(viewmodel);
+            EditGameWindow editGameWindow = new EditGameWindow { DataContext = viewmodel };
             editGameWindow.ShowDialog();
 
             OnPropertyChanged("GameList");

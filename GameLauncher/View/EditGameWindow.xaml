@@ -1,6 +1,8 @@
-﻿<Window x:Class="GameLauncher.View.EditGameWindow" x:ClassModifier="internal"
+﻿<Window x:Class="GameLauncher.View.EditGameWindow" 
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:view="clr-namespace:GameLauncher.View"
+        view:DialogManager.DialogResult="{Binding DialogResult}"
         Title="Редактировать игру" 
         SizeToContent="WidthAndHeight">
     
@@ -28,24 +30,21 @@
                      Text="{Binding Name, Mode=TwoWay}" />
             <StackPanel Grid.Row="1" Grid.Column="1" 
                         Orientation="Horizontal">
-                <TextBox x:Name="ExePathTextBox" 
-                         MinWidth="200" 
+                <TextBox MinWidth="200" 
                          Margin="10" 
                          Text="{Binding ExePath, Mode=TwoWay}" />
                 <Button Height="25" Width="25"
-                        Click="OnBrowseExePath">...</Button>
+                        Command="{Binding BrowseExeCommand}">...</Button>
             </StackPanel>
             <StackPanel Grid.Row="2" Grid.Column="1" 
                         Orientation="Horizontal">
-                <TextBox x:Name="ImagePathTextBox" 
-                         MinWidth="200" 
+                <TextBox MinWidth="200" 
                          Margin="10" 
                          Text="{Binding ImagePath, Mode=TwoWay}" />
                 <Button Height="25" Width="25" 
-                        Click="OnBrowseImagePath">...</Button>
+                        Command="{Binding BrowseImageCommand}">...</Button>
             </StackPanel>
-            <TextBox x:Name="DurationTextBox" 
-                     Grid.Row="3" Grid.Column="1" 
+            <TextBox Grid.Row="3" Grid.Column="1" 
                      MinWidth="200" 
                      Margin="10" 
                      Text="{Binding Duration, Mode=TwoWay}" />
@@ -55,10 +54,10 @@
             <Button MinWidth="70" 
                     Margin="5"
                     IsDefault="True"
-                    Click="OnSave">Сохранить</Button>
+                    Command="{Binding SaveCommand}">Сохранить</Button>
             <Button MinWidth="70"
                     Margin="5" 
-                    Click="OnCancel">Отмена</Button>
+                    Command="{Binding CancelCommand}">Отмена</Button>
         </DockPanel>
     </StackPanel>
 </Window>

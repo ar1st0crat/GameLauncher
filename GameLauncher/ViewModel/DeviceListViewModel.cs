@@ -10,7 +10,7 @@ namespace GameLauncher.ViewModel
 
         public int SelectedAudioDevice { get; set; }
         public int SelectedVideoDevice { get; set; }
-        
+
         #region INPC-related code
 
         public event PropertyChangedEventHandler PropertyChanged;

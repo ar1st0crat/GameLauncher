@@ -69,6 +69,8 @@
     <Compile Include="Util\DeviceInfoParser.cs" />
     <Compile Include="Util\StringEncryptionUtil.cs" />
     <Compile Include="ViewModel\DeviceListViewModel.cs" />
+    <Compile Include="View\DialogManager.cs" />
+    <Compile Include="ViewModel\RegisterViewModel.cs" />
     <Compile Include="View\AuthorizeWindow.xaml.cs">
       <DependentUpon>AuthorizeWindow.xaml</DependentUpon>
     </Compile>
