@@ -1,9 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using GameLauncher.Model;
 
 namespace GameLauncher.Util
 {
@@ -12,29 +11,61 @@ namespace GameLauncher.Util
     /// </summary>
     class WebCamRecorder
     {
-        private Process _recordProcess;
-        private bool _isEnabled;
+        private const string FFMPEG_PATH = "ffmpeg.exe";
         
         // device names (can be enumerated by FFmpeg)
-        private string _audioDevice;
-        private string _videoDevice;
+        private List<string> _videoDeviceList;
+        public List<string> VideoDeviceList 
+        {
+            get
+            {
+                Initialize();               // refresh list each time
+                return _videoDeviceList;
+            }
+        }
 
+        private List<string> _audioDeviceList;
+        public List<string> AudioDeviceList
+        {
+            get
+            {
+                Initialize();               // refresh list each time
+                return _audioDeviceList;
+            }
+        }
+
+        public int SelectedAudioDevice { get; set; }
+        public int SelectedVideoDevice { get; set; }
+
+        // recording
+        private Process _recordProcess;
+        private bool _isEnabled;
+
+        /// <summary>
+        /// Read and parse multimedia device configuration using ffmpeg and setup WebCamRecorder
+        /// </summary>
+        /// <returns>
+        /// true, if device configuration was read and parsed succesfully
+        /// false, if ffmpeg path is not valid
+        ///           or ffmpeg process could not be started
+        ///           or device configuration could not be parsed.
+        /// Note: if the list of video devices is empty, function disables recording, but returns true
+        /// </returns>
         public bool Initialize()
         {
             _isEnabled = false;
 
-            if (!File.Exists("ffmpeg.exe"))
+            if (!File.Exists(FFMPEG_PATH))
             {
                 return false;
             }
 
             Directory.CreateDirectory("video");
 
-            var infoProcess = new Process();
             var startInfo = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
-                FileName = "ffmpeg.exe",
+                FileName = FFMPEG_PATH,
                 StandardErrorEncoding = Encoding.GetEncoding(65001),
                 Arguments = " -list_devices true -f dshow -i dummy",
                 RedirectStandardError = true,
@@ -42,70 +73,51 @@ namespace GameLauncher.Util
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
-            infoProcess.StartInfo = startInfo;
-            infoProcess.Start();
 
-            var info = infoProcess.StandardError.ReadToEnd();
+            var infoProcess = new Process { StartInfo = startInfo };
+            try
+            {
+                infoProcess.Start();
+            }
+            catch (Exception)
+            {
+                infoProcess.Dispose();
+                return false;
+            }
+
+            var deviceInfo = infoProcess.StandardError.ReadToEnd();
 
             infoProcess.WaitForExit();
             infoProcess.Close();
+            
+            var parser = new DeviceInfoParser();
+            var deviceLists = parser.Parse(deviceInfo);
 
-            // ==============================================================================================
-            // for future tests:
-            //
-            //info = "[dshow @ 02457a60] DirectShow video devices\n[dshow @ 02457a60]  \"Blackmagic WDM Capture\"\n[dshow @ 02457a60]  \"Decklink Video Capture\"\n[dshow @ 02457a60] DirectShow audio devices\n[dshow @ 02457a60]  \"Decklink Audio Capture\"";
-            //
-            // TODO: make 2 functions:
-            //       string ParseAudioDevice(string info)
-            //       string ParseVideoDevice(string info)
-            //
-            // ==============================================================================================
-
-            var posVideoSection = info.IndexOf("DirectShow video devices", StringComparison.Ordinal);
-            var posAudioSection = info.IndexOf("DirectShow audio devices", StringComparison.Ordinal);
-
-            // no "DirectShow video devices" section:
-            // return immediately
-            if (posVideoSection < 0)
+            if (deviceLists == null)
             {
                 return false;
             }
 
-            var startPosVideoDeviceString = info.IndexOf('"', posVideoSection);
-            var endPosVideoDeviceString = info.IndexOf('"', startPosVideoDeviceString + 1);
-
-            // no "DirectShow video devices" section or
-            // device name was found in "DirectShow audio devices" section: 
-            // return immediately
-            if (startPosVideoDeviceString < 0 ||
-                posAudioSection <= startPosVideoDeviceString)
-            {
-                return false;
-            }
-            
-            _videoDevice = info.Substring(startPosVideoDeviceString, 
-                endPosVideoDeviceString - startPosVideoDeviceString + 1);
-            
-            var startPosAudioDeviceString = info.IndexOf('"', posAudioSection);
-            var endPosAudioDeviceString = info.IndexOf('"', startPosAudioDeviceString + 1);
-
-            if (startPosAudioDeviceString > 0)
-            {
-                _audioDevice = info.Substring(startPosAudioDeviceString,
-                    endPosAudioDeviceString - startPosAudioDeviceString + 1);
-            }
+            _videoDeviceList = deviceLists[0];
+            _audioDeviceList = deviceLists[1];
 
             _isEnabled = true;
+
+            if (_videoDeviceList.Count == 0)
+            {
+                _isEnabled = false;
+            }
 
             return true;
         }
 
         /// <summary>
         /// Combine command line arguments for ffmpeg recording process
+        /// 
         /// TBD: Add more audio settings: 
         /// String.Format(" -f dshow -i audio={0} -ac 1 -ar 8000 \"{1}\"", _audioDevice, filename)
         /// 
-        /// more examples:  
+        /// more examples (perhaps, will be needed in the future):  
         /// ffmpeg -f dshow -r 25 -i 0  -ab 64 -ar 22050 -ac 1 output.avi
         /// ffmpeg -f dshow -i video="Integrated Camera" -c copy raw.avi -c:v libx264 -preset veryfast -crf 25 encoded.mp4
         /// </summary>
@@ -113,53 +125,65 @@ namespace GameLauncher.Util
         /// <returns>Command line arguments for ffmpeg recording process</returns>
         private string BuildCmdArguments(string filename)
         {
+            var audioDevice = AudioDeviceList[SelectedAudioDevice];
+            var videoDevice = VideoDeviceList[SelectedVideoDevice];
+
             // record only video:
-            if (String.IsNullOrEmpty(_audioDevice))
+            if (String.IsNullOrEmpty(audioDevice))
             {
-                return String.Format(" -f dshow -i video={0} -preset ultrafast -framerate 25 \"{1}\"",
-                    _videoDevice, filename);
+                return String.Format(" -f dshow -i video={0} -preset ultrafast -framerate 25 \"{1}\"", videoDevice, filename);
             }
 
             // record both video and audio:
-            return String.Format(" -f dshow -i video={0}:audio={1} -preset ultrafast -framerate 25 \"{2}\"",
-                _videoDevice, _audioDevice, filename);
+            return String.Format(" -f dshow -i video={0}:audio={1} -preset ultrafast -framerate 25 \"{2}\"", videoDevice, audioDevice, filename);
         }
 
-        public bool Start(Game game)
+        /// <summary>
+        /// Start recording video (with or maybe without audio) using ffmpeg
+        /// </summary>
+        /// <param name="outputFilename">Fullname of the video file to record</param>
+        /// <returns>
+        /// true, if recording started succesfully
+        /// false, if recorder is disabled 
+        ///        or recorder is currently busy recording other file
+        ///        or ffmpeg process could not be started
+        /// </returns>
+        public bool Start(string outputFilename)
         {
             if (!_isEnabled || _recordProcess != null)
             {
                 return false;
             }
             
-            var filename = String.Format("{0}_{1}.avi",
-                DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss"),
-                game.Name);
-
-            // guarantee that the filename is valid
-            filename = Path.GetInvalidFileNameChars()
-                .Aggregate(filename, (current, c) => current.Replace(c, '_'));
-
-            filename = @"video\" + filename;
-
-
             var startInfo = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
-                FileName = "ffmpeg.exe",
-                Arguments = BuildCmdArguments(filename),
+                FileName = FFMPEG_PATH,
+                Arguments = BuildCmdArguments(outputFilename),
                 RedirectStandardInput = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
 
-            _recordProcess = new Process
+            try
             {
-                EnableRaisingEvents = true,
-                StartInfo = startInfo
-            };
-            _recordProcess.Exited += RecordProcess_Exited;
-            _recordProcess.Start();
+                _recordProcess = new Process
+                {
+                    EnableRaisingEvents = true,
+                    StartInfo = startInfo
+                };
+                _recordProcess.Start();
+                _recordProcess.Exited += RecordProcess_Exited;
+            }
+            catch (Exception)
+            {
+                if (_recordProcess != null)
+                {
+                    _recordProcess.Dispose();
+                    _recordProcess = null;
+                }
+                return false;
+            }
 
             return true;
         }

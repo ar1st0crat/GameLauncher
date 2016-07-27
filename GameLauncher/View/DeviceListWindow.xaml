@@ -1,0 +1,41 @@
+﻿<Window x:Class="GameLauncher.View.DeviceListWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Выберите устройства записи" 
+        SizeToContent="WidthAndHeight">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition MinWidth="280" />
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Grid.Column="0"
+               Margin="10,20,10,10"
+               Content="Видеоустройства" />
+        <ComboBox Grid.Row="0" Grid.Column="1"
+                  Margin="10,20,10,10"
+                  ItemsSource="{Binding VideoDeviceList}"
+                  SelectedIndex="{Binding SelectedVideoDevice}" />
+        <Label Grid.Row="1" Grid.Column="0"
+               Margin="10,10,10,20"
+               Content="Аудиоустройства" />
+        <ComboBox Grid.Row="1" Grid.Column="1"
+                  Margin="10,10,10,20"
+                  ItemsSource="{Binding AudioDeviceList}"
+                  SelectedIndex="{Binding SelectedAudioDevice}" />
+        <StackPanel Grid.Row="2" Grid.Column="1"
+                    Orientation="Horizontal">
+            <Button Height="40" Width="120"
+                    Margin="10,0,10,20"
+                    IsDefault="True"
+                    Click="OnOk">OK</Button>
+            <Button Height="40" Width="120"
+                    Margin="10,0,10,20"
+                    Click="OnCancel">Отмена</Button>
+        </StackPanel>
+    </Grid>
+</Window>

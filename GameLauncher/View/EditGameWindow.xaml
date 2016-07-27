@@ -5,7 +5,8 @@
         SizeToContent="WidthAndHeight">
     
     <StackPanel>
-        <Grid Margin="5">
+        <Grid Margin="5"
+              FocusManager.FocusedElement="{Binding ElementName=NameTextBox}">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
@@ -96,9 +98,10 @@ namespace GameLauncher.ViewModel
 
             if (!_webCamRecorder.Initialize())
             {
-                MessageBox.Show("FFmpeg не установлен или не удалось обнаружить устройство записи! Запись не будет производиться",
+                MessageBox.Show(
+                    "FFmpeg не установлен или не удалось обнаружить устройство записи! Запись не будет производиться",
                     "Внимание!",
-                    MessageBoxButton.OK, 
+                    MessageBoxButton.OK,
                     MessageBoxImage.Information);
             }
 
@@ -106,6 +109,23 @@ namespace GameLauncher.ViewModel
             _timer.Tick += timer_Tick;
 
             LoadGamesFromDatabase();
+        }
+
+        public void SetupDevices()
+        {
+            var deviceListWindowContext = new DeviceListViewModel
+            {
+                VideoDeviceList = _webCamRecorder.VideoDeviceList,
+                AudioDeviceList = _webCamRecorder.AudioDeviceList,
+                SelectedVideoDevice = _webCamRecorder.SelectedVideoDevice,
+                SelectedAudioDevice = _webCamRecorder.SelectedAudioDevice
+            };
+            var deviceWindow = new DeviceListWindow { DataContext = deviceListWindowContext };
+            if (deviceWindow.ShowDialog() == true)
+            {
+                _webCamRecorder.SelectedVideoDevice = deviceListWindowContext.SelectedVideoDevice;
+                _webCamRecorder.SelectedAudioDevice = deviceListWindowContext.SelectedAudioDevice;
+            }
         }
 
         #region CRUD games
@@ -344,28 +364,21 @@ namespace GameLauncher.ViewModel
                 return;
             }
 
-            //if (!System.IO.File.Exists(SelectedGame.ExePath))
-            //{
-            //    MessageBox.Show("Игра не может быть запущена!\nПроверьте путь к файлу!");
-            //    return;
-            //}
-
             if (_gameProcess != null)
             {
                 MessageBox.Show("Остановите сначала уже запущенную игру!");
                 return;
             }
 
+            // try starting new game
             try
             {
-                // start new game
-                _gameProcess = new Process();
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = SelectedGame.ExePath,
                     UseShellExecute = true
                 };
-                _gameProcess.StartInfo = startInfo;
+                _gameProcess = new Process { StartInfo = startInfo };
                 _gameProcess.Start();
             }
             catch (Exception)
@@ -375,14 +388,27 @@ namespace GameLauncher.ViewModel
                 if (_gameProcess != null)
                 {
                     _gameProcess.Dispose();
+                    _gameProcess = null;
                 }
-                _gameProcess = null;
                 return;
             }
 
             _playingGameId = SelectedGame.Id;
 
-            _webCamRecorder.Start(SelectedGame);
+            // =============================================== prepare for recording
+            // TODO: introduce PathManager
+            var filename = String.Format("{0}_{1}.avi",
+                DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss"),
+                SelectedGame.Name);
+
+            // guarantee that the filename is valid
+            filename = Path.GetInvalidFileNameChars()
+                .Aggregate(filename, (current, c) => current.Replace(c, '_'));
+
+            filename = @"video\" + filename;
+
+            _webCamRecorder.Start(filename);
+            // =====================================================================
 
             // prepare and start timer
             _elapsedTime = 0;

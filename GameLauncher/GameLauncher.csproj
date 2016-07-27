@@ -66,12 +66,17 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Util\AuthorizationManager.cs" />
+    <Compile Include="Util\DeviceInfoParser.cs" />
     <Compile Include="Util\StringEncryptionUtil.cs" />
+    <Compile Include="ViewModel\DeviceListViewModel.cs" />
     <Compile Include="View\AuthorizeWindow.xaml.cs">
       <DependentUpon>AuthorizeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Command\CommandWrapper.cs" />
     <Compile Include="Util\DatabaseManager.cs" />
+    <Compile Include="View\DeviceListWindow.xaml.cs">
+      <DependentUpon>DeviceListWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\EditGameWindow.xaml.cs">
       <DependentUpon>EditGameWindow.xaml</DependentUpon>
     </Compile>
@@ -102,6 +107,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AuthorizeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DeviceListWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -70,8 +70,13 @@ namespace GameLauncher.View
 
         private void OnStats(object sender, RoutedEventArgs e)
         {
-            StatsWindow statsWindow = new StatsWindow();
+            var statsWindow = new StatsWindow();
             statsWindow.ShowDialog();
+        }
+
+        private void OnDevices(object sender, RoutedEventArgs e)
+        {
+            _context.SetupDevices();
         }
 
         private void OnSettings(object sender, RoutedEventArgs e)

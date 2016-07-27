@@ -1,11 +1,11 @@
 # GameLauncher
 
-> Требования:
+> РўСЂРµР±РѕРІР°РЅРёСЏ:
 * Windows Vista / Seven / 8
-* .NET Framework 3.5 и выше
+* .NET Framework 3.5 Рё РІС‹С€Рµ
 
-Главное окно
+Р“Р»Р°РІРЅРѕРµ РѕРєРЅРѕ
 ![pic1](https://github.com/ar1st0crat/GameLauncher/blob/master/Screenshots/1.png)
 
-Лог
+Р›РѕРі
 ![pic2](https://github.com/ar1st0crat/GameLauncher/blob/master/Screenshots/2.png)

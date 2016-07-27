@@ -302,6 +302,10 @@
                     <Button Width="100" Height="50" 
                             Margin="5" 
                             Style="{StaticResource GameLauncherButton}" 
+                            Click="OnDevices">Устройства</Button>
+                    <Button Width="100" Height="50" 
+                            Margin="5" 
+                            Style="{StaticResource GameLauncherButton}" 
                             Click="OnSettings">Настройки</Button>
                 </StackPanel>
             </DockPanel>
