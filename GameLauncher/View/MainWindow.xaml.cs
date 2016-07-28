@@ -6,9 +6,6 @@ using GameLauncher.ViewModel;
 
 namespace GameLauncher.View
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private readonly MainViewModel _context;

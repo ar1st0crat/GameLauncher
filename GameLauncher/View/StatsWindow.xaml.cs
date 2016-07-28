@@ -4,9 +4,6 @@ using ListView = System.Windows.Controls.ListView;
 
 namespace GameLauncher.View
 {
-    /// <summary>
-    /// Interaction logic for StatsWindow.xaml
-    /// </summary>
     public partial class StatsWindow : Window
     {
         public StatsWindow()
@@ -18,7 +15,7 @@ namespace GameLauncher.View
         // YOU CAN ELIMINATE THE FOLLOWING CODE IF YOU WILL:
 
         // Auto-compute the width of the last column and auto-resize it when the gridview resizes:
-        // subtract the width of vertical scrollbar and the widths of other columns (total: 220 pixels)
+        // subtract the width of vertical scrollbar and widths of other columns (total: 220 pixels)
         private void LaunchListView_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             ListView listView = sender as ListView;

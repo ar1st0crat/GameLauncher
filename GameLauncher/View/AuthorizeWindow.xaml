@@ -1,8 +1,16 @@
 ﻿<Window x:Class="GameLauncher.View.AuthorizeWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewModel="clr-namespace:GameLauncher.ViewModel"
+        xmlns:viewHelpers="clr-namespace:GameLauncher.ViewHelpers"
+        viewHelpers:DialogResultHelper.DialogResult="{Binding DialogResult}"
         Title="Авторизация" 
         SizeToContent="WidthAndHeight">
+    
+    <Window.DataContext>
+        <viewModel:AuthorizeViewModel />
+    </Window.DataContext>
+    
     <StackPanel>
         <Grid Margin="5" 
               FocusManager.FocusedElement="{Binding ElementName=LoginTextBox}">
@@ -18,22 +26,23 @@
             <Label Grid.Row="1" Grid.Column="0">Пароль</Label>
             <TextBox x:Name="LoginTextBox" 
                      Grid.Row="0" Grid.Column="1" 
+                     Text="{Binding Login}"
                      MinWidth="200" 
                      Margin="10" />
-            <PasswordBox x:Name="PasswordTextBox" 
-                         Grid.Row="1" Grid.Column="1" 
-                         MinWidth="200" 
-                         Margin="10" />
+            <viewHelpers:BindablePasswordBox Grid.Row="1" Grid.Column="1" 
+                                             Password="{Binding Password}"
+                                             MinWidth="200"
+                                             Margin="10" />
         </Grid>
         <DockPanel HorizontalAlignment="Right" 
                    Margin="10">
             <Button MinWidth="70" 
                     Margin="5" 
                     IsDefault="True" 
-                    Click="OnOk">OK</Button>
+                    Command="{Binding LogInCommand}">OK</Button>
             <Button MinWidth="70" 
                     Margin="5" 
-                    Click="OnCancel">Отмена</Button>
+                    Command="{Binding CancelCommand}">Отмена</Button>
         </DockPanel>
     </StackPanel>
 </Window>

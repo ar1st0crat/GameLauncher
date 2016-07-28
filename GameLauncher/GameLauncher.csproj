@@ -69,6 +69,7 @@
     <Compile Include="Util\DeviceInfoParser.cs" />
     <Compile Include="Util\StringEncryptionUtil.cs" />
     <Compile Include="ViewHelpers\BindableCalendar.cs" />
+    <Compile Include="ViewModel\AuthorizeViewModel.cs" />
     <Compile Include="ViewModel\DeviceListViewModel.cs" />
     <Compile Include="ViewHelpers\BindablePasswordBox.cs" />
     <Compile Include="ViewHelpers\DialogResultHelper.cs" />

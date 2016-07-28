@@ -5,18 +5,15 @@ using GameLauncher.Util;
 
 namespace GameLauncher
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         private void ApplicationStart(object sender, StartupEventArgs e)
         {
-            //Disable shutdown when the dialog closes
+            //Disable shutdown when the dialog is closed
             Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             
-            // step 1 - register administrator if app is launched for the first time
-            //          or administrator settings were reset earlier
+            // step 1 - register administrator (if app is launched for the first time
+            //          or administrator settings were reset earlier)
             var authorizer = new AuthorizationManager();
             if (authorizer.RetrieveLogin() == null)
             {
