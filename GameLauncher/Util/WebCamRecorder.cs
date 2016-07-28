@@ -125,8 +125,8 @@ namespace GameLauncher.Util
         /// <returns>Command line arguments for ffmpeg recording process</returns>
         private string BuildCmdArguments(string filename)
         {
-            var audioDevice = AudioDeviceList[SelectedAudioDevice];
-            var videoDevice = VideoDeviceList[SelectedVideoDevice];
+            var audioDevice = _audioDeviceList[SelectedAudioDevice];
+            var videoDevice = _videoDeviceList[SelectedVideoDevice];
 
             // record only video:
             if (String.IsNullOrEmpty(audioDevice))

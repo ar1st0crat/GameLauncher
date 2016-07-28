@@ -177,8 +177,7 @@ namespace GameLauncher.ViewModel
         {
             DialogResult = false;
         }
-
-
+        
         #region INPC-related code
 
         public event PropertyChangedEventHandler PropertyChanged;

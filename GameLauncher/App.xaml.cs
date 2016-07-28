@@ -15,14 +15,16 @@ namespace GameLauncher
             //Disable shutdown when the dialog closes
             Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             
-            // step 1
+            // step 1 - register administrator if app is launched for the first time
+            //          or administrator settings were reset earlier
             var authorizer = new AuthorizationManager();
             if (authorizer.RetrieveLogin() == null)
             {
-                RegisterAdmin();
+                var registerWindow = new RegisterWindow();
+                registerWindow.ShowDialog();
             }
 
-            // step 2
+            // step 2 - create database if it doesn't exist
             try
             {
                 DatabaseManager.PrepareDatabase();
@@ -33,22 +35,16 @@ namespace GameLauncher
                 Shutdown();
             }
 
-            // step 3
+            // step 3 - run authorization
             var authorizeWindow = new AuthorizeWindow();
             if (authorizeWindow.ShowDialog() == true)
             {
-                // step 4
+                // step 4 - show main window
                 var mainWindow = new MainWindow();
                 mainWindow.ShowDialog();
             }
 
             Shutdown();
-        }
-
-        private void RegisterAdmin()
-        {
-            var registerWindow = new RegisterWindow();
-            registerWindow.ShowDialog();
         }
     }
 }

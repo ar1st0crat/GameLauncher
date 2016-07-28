@@ -68,8 +68,10 @@
     <Compile Include="Util\AuthorizationManager.cs" />
     <Compile Include="Util\DeviceInfoParser.cs" />
     <Compile Include="Util\StringEncryptionUtil.cs" />
+    <Compile Include="ViewHelpers\BindableCalendar.cs" />
     <Compile Include="ViewModel\DeviceListViewModel.cs" />
-    <Compile Include="View\DialogManager.cs" />
+    <Compile Include="ViewHelpers\BindablePasswordBox.cs" />
+    <Compile Include="ViewHelpers\DialogResultHelper.cs" />
     <Compile Include="ViewModel\RegisterViewModel.cs" />
     <Compile Include="View\AuthorizeWindow.xaml.cs">
       <DependentUpon>AuthorizeWindow.xaml</DependentUpon>

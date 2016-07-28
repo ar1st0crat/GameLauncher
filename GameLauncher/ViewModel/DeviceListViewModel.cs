@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Input;
+using GameLauncher.Command;
 
 namespace GameLauncher.ViewModel
 {
@@ -10,6 +12,36 @@ namespace GameLauncher.ViewModel
 
         public int SelectedAudioDevice { get; set; }
         public int SelectedVideoDevice { get; set; }
+
+        private bool? _dialogResult;
+        public bool? DialogResult
+        {
+            get { return _dialogResult; }
+            set
+            {
+                _dialogResult = value;
+                OnPropertyChanged("DialogResult");
+            }
+        }
+
+        public ICommand SaveCommand { get; private set; }
+        public ICommand CancelCommand { get; private set; }
+
+        public DeviceListViewModel()
+        {
+            SaveCommand = new RelayCommand(Save);
+            CancelCommand = new RelayCommand(Cancel);
+        }
+
+        public void Save()
+        {
+            DialogResult = true;
+        }
+
+        public void Cancel()
+        {
+            DialogResult = false;
+        }
 
         #region INPC-related code
 

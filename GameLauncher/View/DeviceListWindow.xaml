@@ -1,6 +1,9 @@
 ﻿<Window x:Class="GameLauncher.View.DeviceListWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:view="clr-namespace:GameLauncher.View"
+        xmlns:viewHelpers="clr-namespace:GameLauncher.ViewHelpers"
+        viewHelpers:DialogResultHelper.DialogResult="{Binding DialogResult}"
         Title="Выберите устройства записи" 
         SizeToContent="WidthAndHeight">
     <Grid>
@@ -32,10 +35,10 @@
             <Button Height="40" Width="120"
                     Margin="10,0,10,20"
                     IsDefault="True"
-                    Click="OnOk">OK</Button>
+                    Command="{Binding SaveCommand}">OK</Button>
             <Button Height="40" Width="120"
                     Margin="10,0,10,20"
-                    Click="OnCancel">Отмена</Button>
+                    Command="{Binding CancelCommand}">Отмена</Button>
         </StackPanel>
     </Grid>
 </Window>

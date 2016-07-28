@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using GameLauncher.Command;
 using GameLauncher.Util;
@@ -23,44 +22,73 @@ namespace GameLauncher.ViewModel
             }
         }
 
+        private string _password;
+        public string Password
+        {
+            get { return _password; }
+            set
+            {
+                _password = value;
+                OnPropertyChanged("Password");
+            }
+        }
+
+        private string _repeatPassword;
+        public string RepeatPassword
+        {
+            get { return _repeatPassword; }
+            set
+            {
+                _repeatPassword = value;
+                OnPropertyChanged("RepeatPassword");
+            }
+        }
+
         public ICommand UpdateCommand { get; private set; }
         public ICommand ResetCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
+
+        private bool? _dialogResult;
+        public bool? DialogResult
+        {
+            get { return _dialogResult; }
+            set
+            {
+                _dialogResult = value;
+                OnPropertyChanged("DialogResult");
+            }
+        }
 
 
         public RegisterViewModel()
         {
             Login = _authorizer.RetrieveLogin();
+            Password = _authorizer.RetrievePassword();
+            RepeatPassword = _authorizer.RetrievePassword();
 
             UpdateCommand = new RelayCommand(UpdateAdminSettings);
             ResetCommand = new RelayCommand(ResetAdminSettings);
             CancelCommand = new RelayCommand(Cancel);
         }
 
-        // Well, I'm definitely one of the haters of PasswordBox control in WPF ((
-        // I violate MVVM here (
-        public void UpdateAdminSettings(object sender)
+        public void UpdateAdminSettings()
         {
-            var window = sender as Window;
-            var passwordBox = window.FindName("Password") as PasswordBox;
-            var repeatPasswordBox = window.FindName("RepeatPassword") as PasswordBox;
-
-            if (passwordBox.Password != repeatPasswordBox.Password)
+            if (Password != RepeatPassword)
             {
                 MessageBox.Show("Пароли не совпадают!");
                 return;
             }
 
-            if (passwordBox.Password == "" || Login == "")
+            if (Password == "" || Login == "")
             {
                 MessageBox.Show("Логин и пароль не могут быть пустыми!");
                 return;
             }
 
             _authorizer.UpdateLogin(Login);
-            _authorizer.UpdatePassword(passwordBox.Password);
+            _authorizer.UpdatePassword(Password);
 
-            window.DialogResult = true;
+            DialogResult = true;
         }
 
         public void ResetAdminSettings()
@@ -83,10 +111,9 @@ namespace GameLauncher.ViewModel
             MessageBox.Show("Все настройки администратора сброшены!");
         }
 
-        public void Cancel(object sender)
+        public void Cancel()
         {
-            var window = sender as Window;
-            window.DialogResult = false;
+            DialogResult = false;
         }
 
         #region INPC-related code
