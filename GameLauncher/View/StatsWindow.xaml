@@ -199,6 +199,8 @@
                   Background="Transparent"
                   BorderThickness="0"
                   HorizontalAlignment="Stretch"
+                  VirtualizingStackPanel.IsVirtualizing="True"
+                  VirtualizingStackPanel.VirtualizationMode="Recycling"
                   SizeChanged="LaunchListView_OnSizeChanged">
             <ListView.View>
                 <GridView>
