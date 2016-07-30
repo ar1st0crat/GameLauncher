@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
-using System.Windows.Input;
-using MessageBox = System.Windows.MessageBox;
 
 namespace GameLauncher.ViewHelpers
 {

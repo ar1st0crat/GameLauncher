@@ -84,7 +84,12 @@ namespace GameLauncher.ViewModel
         public ICommand PrevGameCommand { get; private set; }
         public ICommand NextGameCommand { get; private set; }
         public ICommand StartGameCommand { get; private set; }
+        public ICommand AddGameCommand { get; private set; }
+        public ICommand EditGameCommand { get; private set; }
         public ICommand DeleteGameCommand { get; private set; }
+        public ICommand DeviceListCommand { get; private set; }
+        public ICommand StatsCommand { get; private set; }
+        public ICommand SettingsCommand { get; private set; }
 
 
         public MainViewModel()
@@ -94,7 +99,13 @@ namespace GameLauncher.ViewModel
             PrevGameCommand = new RelayCommand(SelectPreviousGame);
             NextGameCommand = new RelayCommand(SelectNextGame);
             StartGameCommand = new RelayCommand(StartGame);
+            AddGameCommand = new RelayCommand(AddGame);
+            EditGameCommand = new RelayCommand(EditGame);
             DeleteGameCommand = new RelayCommand(DeleteGame);
+            DeviceListCommand = new RelayCommand(SetupDevices);
+            StatsCommand = new RelayCommand(Stats);
+            SettingsCommand = new RelayCommand(EditSettings);
+
 
             if (!_webCamRecorder.Initialize())
             {
@@ -110,6 +121,8 @@ namespace GameLauncher.ViewModel
 
             LoadGamesFromDatabase();
         }
+
+        #region settings and stats
 
         public void SetupDevices()
         {
@@ -127,6 +140,23 @@ namespace GameLauncher.ViewModel
                 _webCamRecorder.SelectedAudioDevice = deviceListWindowContext.SelectedAudioDevice;
             }
         }
+
+        private void Stats()
+        {
+            var statsWindow = new StatsWindow();
+            statsWindow.ShowDialog();
+        }
+
+        private void EditSettings()
+        {
+            var registerWindow = new RegisterWindow
+            {
+                Title = "Настройки администратора"
+            };
+            registerWindow.ShowDialog();
+        }
+
+        #endregion
 
         #region CRUD games
 

@@ -3,7 +3,7 @@
 namespace GameLauncher.ViewHelpers
 {
     /// <summary>
-    /// Class provides some useful attached properties
+    /// Class provides useful attached property DialogResult for view models
     /// </summary>
     public static class DialogResultHelper
     {

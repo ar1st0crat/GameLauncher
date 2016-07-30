@@ -16,21 +16,6 @@ namespace GameLauncher.View
             _context = (MainViewModel)DataContext;
         }
 
-        private void OnAddGame(object sender, RoutedEventArgs e)
-        {
-            _context.AddGame();
-        }
-
-        private void OnEditGame(object sender, RoutedEventArgs e)
-        {
-            _context.EditGame();
-        }
-
-        private void OnDeleteGame(object sender, RoutedEventArgs e)
-        {
-            _context.DeleteGame();
-        }
-
         private void OnPreviousPage(object sender, RoutedEventArgs e)
         {
             _context.ShowPreviousPage();
@@ -63,26 +48,6 @@ namespace GameLauncher.View
             }
 
             _context.SelectGame(-1);
-        }
-
-        private void OnStats(object sender, RoutedEventArgs e)
-        {
-            var statsWindow = new StatsWindow();
-            statsWindow.ShowDialog();
-        }
-
-        private void OnDevices(object sender, RoutedEventArgs e)
-        {
-            _context.SetupDevices();
-        }
-
-        private void OnSettings(object sender, RoutedEventArgs e)
-        {
-            var registerWindow = new RegisterWindow
-            {
-                Title = "Настройки администратора"
-            };
-            registerWindow.ShowDialog();
         }
 
         protected override void OnClosed(EventArgs e)

@@ -233,7 +233,7 @@
                            Style="{StaticResource WritingStyle}"/>
             </Grid>
             
-            <!-- navifate right -->
+            <!-- navigate right -->
             <Image Grid.Column="2" 
                    Source="../images/arrow-left.png" 
                    Style="{StaticResource SwitchPageStyle}"
@@ -282,15 +282,15 @@
                 <StackPanel Orientation="Horizontal">
                     <Button Width="80" Height="50" 
                             Margin="5" 
-                            Click="OnAddGame" 
+                            Command="{Binding AddGameCommand}"
                             Style="{StaticResource GameLauncherButton}">Новая</Button>
                     <Button Width="80" Height="50" 
                             Margin="5" 
-                            Click="OnEditGame" 
+                            Command="{Binding EditGameCommand}"
                             Style="{StaticResource GameLauncherButton}">Изменить</Button>
                     <Button Width="80" Height="50" 
                             Margin="5" 
-                            Click="OnDeleteGame" 
+                            Command="{Binding DeleteGameCommand}"
                             Style="{StaticResource GameLauncherButton}">Удалить</Button>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" 
@@ -298,15 +298,15 @@
                     <Button Width="100" Height="50" 
                             Margin="5" 
                             Style="{StaticResource GameLauncherButton}" 
-                            Click="OnStats">Статистика</Button>
+                            Command="{Binding StatsCommand}">Статистика</Button>
                     <Button Width="100" Height="50" 
                             Margin="5" 
                             Style="{StaticResource GameLauncherButton}" 
-                            Click="OnDevices">Устройства</Button>
+                            Command="{Binding DeviceListCommand}">Устройства</Button>
                     <Button Width="100" Height="50" 
                             Margin="5" 
                             Style="{StaticResource GameLauncherButton}" 
-                            Click="OnSettings">Настройки</Button>
+                            Command="{Binding SettingsCommand}">Настройки</Button>
                 </StackPanel>
             </DockPanel>
         </Expander>
