@@ -34,7 +34,7 @@ namespace GameLauncher.ViewModel
         }
 
         // number of displayed launches of each game
-        private const int RECENT_LIST_COUNT = 5;
+        private const int RecentListCount = 5;
 
         // filters
         private DateTime _startPeriod;
@@ -98,7 +98,7 @@ namespace GameLauncher.ViewModel
             {
                 var db = new DatabaseManager();
                 Launches = db.LoadLaunches(_startPeriod, _endPeriod);
-                Games = db.LoadGamesStats(_startPeriod, _endPeriod, RECENT_LIST_COUNT);
+                Games = db.LoadGamesStats(_startPeriod, _endPeriod, RecentListCount);
             }
             catch (Exception ex)
             {

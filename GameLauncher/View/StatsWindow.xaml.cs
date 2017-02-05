@@ -18,10 +18,12 @@ namespace GameLauncher.View
         // subtract the width of vertical scrollbar and widths of other columns (total: 220 pixels)
         private void LaunchListView_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ListView listView = sender as ListView;
-            GridView gridView = listView.View as GridView;
-
-            gridView.Columns[3].Width = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth - 220;
+            var listView = sender as ListView;
+            if (listView == null)
+                return;
+            var gridView = listView.View as GridView;
+            gridView.Columns[3].Width = 
+                listView.ActualWidth - SystemParameters.VerticalScrollBarWidth - 220;
         }
     }
 }
