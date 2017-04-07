@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Windows;
 using GameLauncher.Command;
 using GameLauncher.Model;
-using GameLauncher.Util;
 
 namespace GameLauncher.ViewModel
 {
@@ -34,31 +33,71 @@ namespace GameLauncher.ViewModel
         }
 
         // number of displayed launches of each game
-        private const int RECENT_LIST_COUNT = 5;
+        private const int RecentListCount = 5;
 
         // filters
         private DateTime _startPeriod;
-        private DateTime _endPeriod;
+        public DateTime StartPeriod
+        {
+            get { return _startPeriod; }
+            set
+            {
+                _startPeriod = value;
+                OnPropertyChanged("StartPeriod");
+                
+                // re-fill data if ONLY StartPeriod was changed
+                if (!_dateGroupChanging)
+                {
+                    FillDataInPeriod();
+                }
+                // otherwise, data will be re-filled in EndPeriod Setter
+            }
+        }
 
+        private DateTime _endPeriod;
+        public DateTime EndPeriod
+        {
+            get { return _endPeriod; }
+            set
+            {
+                _endPeriod = value;
+                OnPropertyChanged("EndPeriod");
+                FillDataInPeriod();
+            }
+        }
+
+        private bool _dateGroupChanging;
+
+        public RelayCommand ShowLastWeekCommand { get; private set; }
+        public RelayCommand ShowLastMonthCommand { get; private set; }
         public RelayCommand ShowLogCommand { get; private set; }
 
 
         public StatsViewModel()
         {
+            ShowLastWeekCommand = new RelayCommand(LastWeekData);
+            ShowLastMonthCommand = new RelayCommand(LastMonthData);
             ShowLogCommand = new RelayCommand(FillGameData);
+
+            _dateGroupChanging = true;
+
+            StartPeriod = DateTime.Now.AddDays(-7);
+            EndPeriod = DateTime.Now;
+
+            _dateGroupChanging = false;
         }
 
-        public void FillDataInPeriod(DateTime startPeriod, DateTime endPeriod)
+        private void FillDataInPeriod()
         {
-            // set time to 00:00:00
-            _startPeriod = startPeriod.Date + new TimeSpan(0, 0, 0);
-            _endPeriod = endPeriod.AddDays(1).Date + new TimeSpan(0, 0, 0);
+            // set start time to 00:00:00 and end time to 23:59:59
+            _startPeriod = _startPeriod.Date + new TimeSpan(0, 0, 0);
+            _endPeriod = _endPeriod.Date + new TimeSpan(23, 59, 59);
 
             try
             {
                 var db = new GameRepository();
                 Launches = db.LoadLaunches(_startPeriod, _endPeriod);
-                Games = db.LoadGamesStats(_startPeriod, _endPeriod, RECENT_LIST_COUNT);
+                Games = db.LoadGamesStats(_startPeriod, _endPeriod, RecentListCount);
             }
             catch (Exception ex)
             {
@@ -66,7 +105,7 @@ namespace GameLauncher.ViewModel
             }
         }
 
-        public void FillGameData(object id)
+        private void FillGameData(object id)
         {
             try
             {
@@ -77,6 +116,28 @@ namespace GameLauncher.ViewModel
             {
                 MessageBox.Show("Не удалось получить информацию по запускам игры!\n" + ex.Message);
             }
+        }
+
+        private void LastWeekData()
+        {
+            var now = DateTime.Now;
+            _dateGroupChanging = true;
+
+            StartPeriod = now.AddDays(1 - (int)now.DayOfWeek);
+            EndPeriod = now;
+
+            _dateGroupChanging = false;
+        }
+
+        private void LastMonthData()
+        {
+            var now = DateTime.Now;
+            _dateGroupChanging = true;
+
+            StartPeriod = new DateTime(now.Year, now.Month, 1);
+            EndPeriod = now;
+
+            _dateGroupChanging = false;
         }
 
         #region INPC-related code

@@ -1,72 +1,29 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
-using GameLauncher.ViewModel;
 using ListView = System.Windows.Controls.ListView;
 
 namespace GameLauncher.View
 {
-    /// <summary>
-    /// Interaction logic for StatsWindow.xaml
-    /// </summary>
     public partial class StatsWindow : Window
     {
         public StatsWindow()
         {
             InitializeComponent();
-
-            CalendarStartPeriod.ShowTodayCircle = false;
-            CalendarStartPeriod.ShowToday = false;
-
-            var now = DateTime.Now;
-            var startPeriod = now.AddDays(-7);
-            CalendarStartPeriod.SetSelectionRange(startPeriod, startPeriod);
-
-            ((StatsViewModel)DataContext).FillDataInPeriod(
-                CalendarStartPeriod.SelectionEnd, CalendarEndPeriod.SelectionEnd);
         }
 
-        private void CalendarStartPeriod_OnMouseDown(object sender, MouseEventArgs e)
-        {
-            ((StatsViewModel)DataContext).FillDataInPeriod(
-                CalendarStartPeriod.SelectionEnd, CalendarEndPeriod.SelectionEnd);
-        }
+        // THIS COULD NOT BE ACHIEVED WITH XAML IN .NET 3.5.
+        // YOU CAN ELIMINATE THE FOLLOWING CODE IF YOU WILL:
 
-        private void CalendarEndPeriod_OnMouseDown(object sender, MouseEventArgs e)
-        {
-            ((StatsViewModel)DataContext).FillDataInPeriod(
-                CalendarStartPeriod.SelectionEnd, CalendarEndPeriod.SelectionEnd);
-        }
-
-        private void LastWeekClick(object sender, RoutedEventArgs e)
-        {
-            var now = DateTime.Now;
-            var lastWeekDate = now.AddDays(1 - (int)now.DayOfWeek);
-
-            CalendarStartPeriod.SetSelectionRange(lastWeekDate, lastWeekDate);
-
-            ((StatsViewModel)DataContext).FillDataInPeriod(lastWeekDate, now);
-        }
-
-        private void LastMonthClick(object sender, RoutedEventArgs e)
-        {
-            var now = DateTime.Now;
-            var startOfMonth = new DateTime(now.Year, now.Month, 1);
-
-            CalendarStartPeriod.SetSelectionRange(startOfMonth, startOfMonth);
-
-            ((StatsViewModel)DataContext).FillDataInPeriod(startOfMonth, now);
-        }
-
-        // Auto-compute the width of the last column:
-        // subtract the width of vertical scrollbar and the widths of other columns (total: 220 pixels)
+        // Auto-compute the width of the last column and auto-resize it when the gridview resizes:
+        // subtract the width of vertical scrollbar and widths of other columns (total: 220 pixels)
         private void LaunchListView_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ListView listView = sender as ListView;
-            GridView gridView = listView.View as GridView;
-
-            gridView.Columns[3].Width = listView.ActualWidth - SystemParameters.VerticalScrollBarWidth - 220;
+            var listView = sender as ListView;
+            if (listView == null)
+                return;
+            var gridView = listView.View as GridView;
+            gridView.Columns[3].Width = 
+                listView.ActualWidth - SystemParameters.VerticalScrollBarWidth - 220;
         }
     }
 }

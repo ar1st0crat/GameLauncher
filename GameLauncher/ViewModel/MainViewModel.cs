@@ -45,7 +45,7 @@ namespace GameLauncher.ViewModel
         private int _playingGameId;
 
         // pagination:
-        private const int GAMES_PER_PAGE = 6;
+        private const int GamesPerPage = 6;
         private int _pageStartPosition = 0;
 
         // message to show while some operation is pending
@@ -69,6 +69,7 @@ namespace GameLauncher.ViewModel
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
+        // WINAPI-like constants:
         private const int SW_HIDE = 0;
         private const int SW_SHOWNORMAL = 1;
         //private const int SW_SHOWMINIMIZED = 2;
@@ -84,7 +85,12 @@ namespace GameLauncher.ViewModel
         public ICommand PrevGameCommand { get; private set; }
         public ICommand NextGameCommand { get; private set; }
         public ICommand StartGameCommand { get; private set; }
+        public ICommand AddGameCommand { get; private set; }
+        public ICommand EditGameCommand { get; private set; }
         public ICommand DeleteGameCommand { get; private set; }
+        public ICommand DeviceListCommand { get; private set; }
+        public ICommand StatsCommand { get; private set; }
+        public ICommand SettingsCommand { get; private set; }
 
 
         public MainViewModel()
@@ -94,8 +100,13 @@ namespace GameLauncher.ViewModel
             PrevGameCommand = new RelayCommand(SelectPreviousGame);
             NextGameCommand = new RelayCommand(SelectNextGame);
             StartGameCommand = new RelayCommand(StartGame);
+            AddGameCommand = new RelayCommand(AddGame);
+            EditGameCommand = new RelayCommand(EditGame);
             DeleteGameCommand = new RelayCommand(DeleteGame);
-
+            DeviceListCommand = new RelayCommand(SetupDevices);
+            StatsCommand = new RelayCommand(Stats);
+            SettingsCommand = new RelayCommand(EditSettings);
+            
             if (!_webCamRecorder.Initialize())
             {
                 MessageBox.Show(
@@ -110,6 +121,8 @@ namespace GameLauncher.ViewModel
 
             LoadGamesFromDatabase();
         }
+
+        #region settings and stats
 
         public void SetupDevices()
         {
@@ -128,6 +141,23 @@ namespace GameLauncher.ViewModel
             }
         }
 
+        private void Stats()
+        {
+            var statsWindow = new StatsWindow();
+            statsWindow.ShowDialog();
+        }
+
+        private void EditSettings()
+        {
+            var registerWindow = new RegisterWindow
+            {
+                Title = "Настройки администратора"
+            };
+            registerWindow.ShowDialog();
+        }
+
+        #endregion
+
         #region CRUD games
 
         private bool LoadGamesFromDatabase()
@@ -135,7 +165,7 @@ namespace GameLauncher.ViewModel
             try
             {
                 var db = new GameRepository();
-                GameList = db.LoadGames(_pageStartPosition, GAMES_PER_PAGE + 1);
+                GameList = db.LoadGames(_pageStartPosition, GamesPerPage + 1);
             }
             catch (Exception ex)
             {
@@ -148,31 +178,31 @@ namespace GameLauncher.ViewModel
 
         public void ShowNextPage()
         {
-            if (GameList.Count <= GAMES_PER_PAGE)
+            if (GameList.Count <= GamesPerPage)
             {
                 return;
             }
 
-            _pageStartPosition += GAMES_PER_PAGE;
+            _pageStartPosition += GamesPerPage;
 
             if (!LoadGamesFromDatabase())
             {
-                _pageStartPosition -= GAMES_PER_PAGE;
+                _pageStartPosition -= GamesPerPage;
             }
         }
 
         public void ShowPreviousPage()
         {
-            if (_pageStartPosition < GAMES_PER_PAGE)
+            if (_pageStartPosition < GamesPerPage)
             {
                 return;
             }
 
-            _pageStartPosition -= GAMES_PER_PAGE;
+            _pageStartPosition -= GamesPerPage;
 
             if (!LoadGamesFromDatabase())
             {
-                _pageStartPosition += GAMES_PER_PAGE;
+                _pageStartPosition += GamesPerPage;
             }
         }
 
@@ -181,7 +211,7 @@ namespace GameLauncher.ViewModel
             try
             {
                 var db = new GameRepository();
-                GameList = db.LoadLastGames(GAMES_PER_PAGE, out _pageStartPosition);
+                GameList = db.LoadLastGames(GamesPerPage, out _pageStartPosition);
             }
             catch (Exception ex)
             {
@@ -191,15 +221,16 @@ namespace GameLauncher.ViewModel
         
         public void AddGame()
         {
-            EditGameViewModel viewmodel = new EditGameViewModel
+            var viewmodel = new EditGameViewModel
             {
                 Name = "Неизвестная", 
                 Duration = 30
             };
 
-            EditGameWindow editGameWindow = new EditGameWindow(viewmodel)
+            var editGameWindow = new EditGameWindow
             {
-                Title = "Новая игра"
+                Title = "Новая игра",
+                DataContext = viewmodel
             };
 
             if (editGameWindow.ShowDialog() == true)
@@ -215,8 +246,8 @@ namespace GameLauncher.ViewModel
                 return;
             }
 
-            EditGameViewModel viewmodel = new EditGameViewModel(SelectedGame);
-            EditGameWindow editGameWindow = new EditGameWindow(viewmodel);
+            var viewmodel = new EditGameViewModel(SelectedGame);
+            var editGameWindow = new EditGameWindow { DataContext = viewmodel };
             editGameWindow.ShowDialog();
 
             OnPropertyChanged("GameList");
@@ -302,22 +333,22 @@ namespace GameLauncher.ViewModel
 
         public void SelectNextGame()
         {
-            if (_selectedIndex % GAMES_PER_PAGE == GameList.Count - 1 
-                && GameList.Count <= GAMES_PER_PAGE)
+            if (_selectedIndex % GamesPerPage == GameList.Count - 1 
+                && GameList.Count <= GamesPerPage)
             {
                 return;
             }
 
             // check if the selection is currently on other page
             if (_selectedIndex < _pageStartPosition || 
-                _selectedIndex >= _pageStartPosition + GAMES_PER_PAGE)
+                _selectedIndex >= _pageStartPosition + GamesPerPage)
             {
                 return;
             }
             
             _selectedIndex++;
 
-            if (_selectedIndex % GAMES_PER_PAGE == 0)
+            if (_selectedIndex % GamesPerPage == 0)
             {
                 if (_selectedIndex != 0)
                 {
@@ -325,7 +356,7 @@ namespace GameLauncher.ViewModel
                 }
             }
 
-            SelectGame(_selectedIndex % GAMES_PER_PAGE);
+            SelectGame(_selectedIndex % GamesPerPage);
         }
 
         public void SelectPreviousGame()
@@ -337,19 +368,19 @@ namespace GameLauncher.ViewModel
 
             // check if the selection is currently on other page
             if (_selectedIndex < _pageStartPosition ||
-                _selectedIndex >= _pageStartPosition + GAMES_PER_PAGE)
+                _selectedIndex >= _pageStartPosition + GamesPerPage)
             {
                 return;
             }
 
-            if (_selectedIndex % GAMES_PER_PAGE == 0)
+            if (_selectedIndex % GamesPerPage == 0)
             {
                 ShowPreviousPage();
             }
 
             _selectedIndex--;
 
-            SelectGame(_selectedIndex % GAMES_PER_PAGE);
+            SelectGame(_selectedIndex % GamesPerPage);
         }
 
         #endregion
