@@ -8,7 +8,7 @@ namespace GameLauncher.View
     /// </summary>
     public partial class AuthorizeWindow : Window
     {
-        private readonly AuthorizationManager _authorizer = new AuthorizationManager();
+        private readonly AuthorizationService _authorizer = new AuthorizationService();
 
         public AuthorizeWindow()
         {

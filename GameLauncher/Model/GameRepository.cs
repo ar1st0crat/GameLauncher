@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using SQLite;
-using GameLauncher.Model;
 
-namespace GameLauncher.Util
+namespace GameLauncher.Model
 {
-    class DatabaseManager
+    class GameRepository
     {
-        private const string DB_FILENAME = "games.db";
+        private const string DbFilename = "games.db";
 
-        public static void PrepareDatabase()
+        public static void Prepare()
         {
-            if (File.Exists(DB_FILENAME))
+            if (File.Exists(DbFilename))
             {
                 return;
             }
 
-            using (var db = new SQLiteConnection(DB_FILENAME, false))
+            using (var db = new SQLiteConnection(DbFilename, false))
             {
                 db.CreateTable<Game>();
                 db.CreateTable<Launch>();
@@ -29,7 +28,7 @@ namespace GameLauncher.Util
 
         public void PopulateStub()
         {
-            using (var db = new SQLiteConnection(DB_FILENAME, false))
+            using (var db = new SQLiteConnection(DbFilename, false))
             {
                 var games = Enumerable.Range(1, 20).Select(i => new Game
                 {
@@ -42,7 +41,7 @@ namespace GameLauncher.Util
                 db.InsertAll(games);
 
                 var rnd = new Random();
-                DateTime startTime = new DateTime(2016, 5, 1);
+                var startTime = new DateTime(2016, 5, 1);
 
                 for (int i = 0; i < 5000; i++)
                 {
@@ -62,7 +61,7 @@ namespace GameLauncher.Util
 
         public List<Game> LoadGames(int toSkip, int toTake)
         {
-            using (var db = new SQLiteConnection(DB_FILENAME, false))
+            using (var db = new SQLiteConnection(DbFilename, false))
             {
                 return db.Table<Game>()
                          .Skip(toSkip)
@@ -73,7 +72,7 @@ namespace GameLauncher.Util
 
         public List<Game> LoadLastGames(int pageSize, out int pageStartPosition)
         {
-            using (var db = new SQLiteConnection(DB_FILENAME, false))
+            using (var db = new SQLiteConnection(DbFilename, false))
             {
                 var count = db.Table<Game>().Count();
 
@@ -88,7 +87,7 @@ namespace GameLauncher.Util
 
         public void AddGame(Game game)
         {
-            using (var db = new SQLiteConnection(DB_FILENAME, false))
+            using (var db = new SQLiteConnection(DbFilename, false))
             {
                 db.Insert(game);
             }
@@ -96,7 +95,7 @@ namespace GameLauncher.Util
 
         public void UpdateGame(Game game)
         {
-            using (var db = new SQLiteConnection(DB_FILENAME, false))
+            using (var db = new SQLiteConnection(DbFilename, false))
             {
                 db.Update(game);
             }
@@ -104,7 +103,7 @@ namespace GameLauncher.Util
 
         public void DeleteGame(int gameId)
         {
-            using (var db = new SQLiteConnection(DB_FILENAME, false))
+            using (var db = new SQLiteConnection(DbFilename, false))
             {
                 db.Delete<Game>(gameId);
 
@@ -119,7 +118,7 @@ namespace GameLauncher.Util
 
         public void AddLaunch(int gameId, int elapsedTime)
         {
-            using (var db = new SQLiteConnection(DB_FILENAME, false))
+            using (var db = new SQLiteConnection(DbFilename, false))
             {
                 var launch = new Launch
                 {
@@ -134,7 +133,7 @@ namespace GameLauncher.Util
 
         public List<LaunchInfo> LoadLaunches(DateTime startPeriod, DateTime endPeriod)
         {
-            using (var db = new SQLiteConnection(DB_FILENAME, false))
+            using (var db = new SQLiteConnection(DbFilename, false))
             {
                 var launches = db.Table<Launch>()
                     .Where(l => l.LaunchTime >= startPeriod && l.LaunchTime <= endPeriod)
@@ -152,7 +151,7 @@ namespace GameLauncher.Util
 
         public List<GameStats> LoadGamesStats(DateTime startPeriod, DateTime endPeriod, int recentListCount)
         {
-            using (var db = new SQLiteConnection(DB_FILENAME, false))
+            using (var db = new SQLiteConnection(DbFilename, false))
             {
                 var launches = db.Table<Launch>()
                                  .Where(l => l.LaunchTime >= startPeriod && l.LaunchTime <= endPeriod)
@@ -181,7 +180,7 @@ namespace GameLauncher.Util
 
         public List<LaunchInfo> LoadGameLaunchData(int gameId, DateTime startPeriod, DateTime endPeriod)
         {
-            using (var db = new SQLiteConnection(DB_FILENAME, false))
+            using (var db = new SQLiteConnection(DbFilename, false))
             {
                 var launches = db.Table<Launch>()
                                  .Where(l => l.GameId == gameId && l.LaunchTime >= startPeriod && l.LaunchTime <= endPeriod)

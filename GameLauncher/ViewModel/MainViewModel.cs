@@ -134,7 +134,7 @@ namespace GameLauncher.ViewModel
         {
             try
             {
-                var db = new DatabaseManager();
+                var db = new GameRepository();
                 GameList = db.LoadGames(_pageStartPosition, GAMES_PER_PAGE + 1);
             }
             catch (Exception ex)
@@ -180,7 +180,7 @@ namespace GameLauncher.ViewModel
         {
             try
             {
-                var db = new DatabaseManager();
+                var db = new GameRepository();
                 GameList = db.LoadLastGames(GAMES_PER_PAGE, out _pageStartPosition);
             }
             catch (Exception ex)
@@ -248,7 +248,7 @@ namespace GameLauncher.ViewModel
 
             try
             {
-                var db = new DatabaseManager();
+                var db = new GameRepository();
                 db.DeleteGame(SelectedGame.Id);
             }
             catch (Exception ex)
@@ -457,7 +457,7 @@ namespace GameLauncher.ViewModel
             // 4) update database ('launch' table)
             try
             {
-                var db = new DatabaseManager();
+                var db = new GameRepository();
                 db.AddLaunch(_playingGameId, _elapsedTime);
             }
             catch (Exception ex)

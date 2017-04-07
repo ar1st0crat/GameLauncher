@@ -56,7 +56,7 @@ namespace GameLauncher.ViewModel
 
             try
             {
-                var db = new DatabaseManager();
+                var db = new GameRepository();
                 Launches = db.LoadLaunches(_startPeriod, _endPeriod);
                 Games = db.LoadGamesStats(_startPeriod, _endPeriod, RECENT_LIST_COUNT);
             }
@@ -70,7 +70,7 @@ namespace GameLauncher.ViewModel
         {
             try
             {
-                var db = new DatabaseManager();
+                var db = new GameRepository();
                 Launches = db.LoadGameLaunchData((int)id, _startPeriod, _endPeriod);
             }
             catch (Exception ex)

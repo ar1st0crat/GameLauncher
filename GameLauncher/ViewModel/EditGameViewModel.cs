@@ -121,7 +121,7 @@ namespace GameLauncher.ViewModel
 
             try
             {
-                var db = new DatabaseManager();
+                var db = new GameRepository();
                 db.AddGame(game);
             }
             catch (Exception ex)
@@ -139,7 +139,7 @@ namespace GameLauncher.ViewModel
 
             try
             {
-                var db = new DatabaseManager();
+                var db = new GameRepository();
                 db.UpdateGame(_game);
             }
             catch (Exception ex)

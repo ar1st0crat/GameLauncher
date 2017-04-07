@@ -2,6 +2,7 @@
 using System.Windows;
 using GameLauncher.View;
 using GameLauncher.Util;
+using GameLauncher.Model;
 
 namespace GameLauncher
 {
@@ -16,7 +17,7 @@ namespace GameLauncher
             Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             
             // step 1
-            var authorizer = new AuthorizationManager();
+            var authorizer = new AuthorizationService();
             if (authorizer.RetrieveLogin() == null)
             {
                 RegisterAdmin();
@@ -25,7 +26,7 @@ namespace GameLauncher
             // step 2
             try
             {
-                DatabaseManager.PrepareDatabase();
+                GameRepository.Prepare();
             }
             catch (Exception ex)
             {

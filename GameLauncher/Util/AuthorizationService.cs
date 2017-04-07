@@ -2,15 +2,15 @@
 
 namespace GameLauncher.Util
 {
-    class AuthorizationManager
+    class AuthorizationService
     {
-        private const string REG_SUBKEY = @"SOFTWARE\WPFGameLauncher";
+        private const string RegSubkey = @"SOFTWARE\WPFGameLauncher";
 
         public string RetrieveLogin()
         {
             string login = null;
 
-            using (var key = Registry.CurrentUser.OpenSubKey(REG_SUBKEY))
+            using (var key = Registry.CurrentUser.OpenSubKey(RegSubkey))
             {
                 if (key != null)
                 {
@@ -25,7 +25,7 @@ namespace GameLauncher.Util
         {
             string password = null;
 
-            using (var key = Registry.CurrentUser.OpenSubKey(REG_SUBKEY))
+            using (var key = Registry.CurrentUser.OpenSubKey(RegSubkey))
             {
                 if (key != null)
                 {
@@ -38,7 +38,7 @@ namespace GameLauncher.Util
 
         public void UpdateLogin(string login)
         {
-            using (var key = Registry.CurrentUser.CreateSubKey(REG_SUBKEY))
+            using (var key = Registry.CurrentUser.CreateSubKey(RegSubkey))
             {
                 if (key != null)
                 {
@@ -49,7 +49,7 @@ namespace GameLauncher.Util
 
         public void UpdatePassword(string password)
         {
-            using (var key = Registry.CurrentUser.CreateSubKey(REG_SUBKEY))
+            using (var key = Registry.CurrentUser.CreateSubKey(RegSubkey))
             {
                 if (key != null)
                 {
@@ -60,11 +60,11 @@ namespace GameLauncher.Util
 
         public void ResetAdminSettings()
         {
-            using (var key = Registry.CurrentUser.OpenSubKey(REG_SUBKEY))
+            using (var key = Registry.CurrentUser.OpenSubKey(RegSubkey))
             {
                 if (key != null)
                 {
-                    Registry.CurrentUser.DeleteSubKey(REG_SUBKEY);
+                    Registry.CurrentUser.DeleteSubKey(RegSubkey);
                 }
             }
         }
