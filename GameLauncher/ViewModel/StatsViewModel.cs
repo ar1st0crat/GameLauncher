@@ -11,7 +11,7 @@ namespace GameLauncher.ViewModel
     {
         // Collections are element-wise static, so there's no need for using the ObservableCollection
         private List<GameStats> _games;
-        public List<GameStats> Games 
+        public List<GameStats> Games
         { 
             get { return _games; }
             set

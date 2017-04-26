@@ -14,8 +14,8 @@ namespace GameLauncher.Util
             SymmetricAlgorithm algorithm = DES.Create();
             ICryptoTransform transform = algorithm.CreateEncryptor(Key, Iv);
 
-            byte[] inputbuffer = Encoding.Unicode.GetBytes(text);
-            byte[] outputBuffer = transform.TransformFinalBlock(inputbuffer, 0, inputbuffer.Length);
+            byte[] inputBuffer = Encoding.Unicode.GetBytes(text);
+            byte[] outputBuffer = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
 
             return Convert.ToBase64String(outputBuffer);
         }
@@ -25,8 +25,8 @@ namespace GameLauncher.Util
             SymmetricAlgorithm algorithm = DES.Create();
             ICryptoTransform transform = algorithm.CreateDecryptor(Key, Iv);
 
-            byte[] inputbuffer = Convert.FromBase64String(text);
-            byte[] outputBuffer = transform.TransformFinalBlock(inputbuffer, 0, inputbuffer.Length);
+            byte[] inputBuffer = Convert.FromBase64String(text);
+            byte[] outputBuffer = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
 
             return Encoding.Unicode.GetString(outputBuffer);
         }

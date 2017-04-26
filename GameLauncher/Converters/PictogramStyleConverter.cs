@@ -16,7 +16,7 @@ namespace GameLauncher.Converters
 
             Uri resourceLocator = new Uri("/GameLauncher;component/Styles/PictogramStyles.xaml", UriKind.Relative);
 
-            ResourceDictionary resourceDictionary = (ResourceDictionary)Application.LoadComponent(resourceLocator);
+            var resourceDictionary = Application.LoadComponent(resourceLocator) as ResourceDictionary;
 
             if (games == null || selectedGame == null || (int)parameter >= games.Count)
             {

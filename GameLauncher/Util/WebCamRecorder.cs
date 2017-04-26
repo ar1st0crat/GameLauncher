@@ -11,7 +11,7 @@ namespace GameLauncher.Util
     /// </summary>
     class WebCamRecorder
     {
-        private const string FFMPEG_PATH = "ffmpeg.exe";
+        private const string FFmpegPath = "ffmpeg.exe";
         
         // device names (can be enumerated by FFmpeg)
         private List<string> _videoDeviceList;
@@ -55,7 +55,7 @@ namespace GameLauncher.Util
         {
             _isEnabled = false;
 
-            if (!File.Exists(FFMPEG_PATH))
+            if (!File.Exists(FFmpegPath))
             {
                 return false;
             }
@@ -65,7 +65,7 @@ namespace GameLauncher.Util
             var startInfo = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
-                FileName = FFMPEG_PATH,
+                FileName = FFmpegPath,
                 StandardErrorEncoding = Encoding.GetEncoding(65001),
                 Arguments = " -list_devices true -f dshow -i dummy",
                 RedirectStandardError = true,
@@ -129,13 +129,13 @@ namespace GameLauncher.Util
             var videoDevice = _videoDeviceList[SelectedVideoDevice];
 
             // record only video:
-            if (String.IsNullOrEmpty(audioDevice))
+            if (string.IsNullOrEmpty(audioDevice))
             {
-                return String.Format(" -f dshow -i video={0} -preset ultrafast -framerate 25 \"{1}\"", videoDevice, filename);
+                return string.Format(" -f dshow -i video={0} -preset ultrafast -framerate 25 \"{1}\"", videoDevice, filename);
             }
 
             // record both video and audio:
-            return String.Format(" -f dshow -i video={0}:audio={1} -preset ultrafast -framerate 25 \"{2}\"", videoDevice, audioDevice, filename);
+            return string.Format(" -f dshow -i video={0}:audio={1} -preset ultrafast -framerate 25 \"{2}\"", videoDevice, audioDevice, filename);
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace GameLauncher.Util
             var startInfo = new ProcessStartInfo
             {
                 WindowStyle = ProcessWindowStyle.Hidden,
-                FileName = FFMPEG_PATH,
+                FileName = FFmpegPath,
                 Arguments = BuildCmdArguments(outputFilename),
                 RedirectStandardInput = true,
                 UseShellExecute = false,

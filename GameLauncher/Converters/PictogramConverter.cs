@@ -3,17 +3,18 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using GameLauncher.Model;
+using System.IO;
 
 namespace GameLauncher.Converters
 {
     public class PictogramConverter : IValueConverter
     {
-        private const string NO_PICTURE = @"../images/question-mark.png";
+        private const string ImageNotFoundPath = @"../images/question-mark.png";
         
         /// <summary>
-        /// Basic conversion:           GAME       ->   WriteableBitmap (or NO_PICTURE)
+        /// Basic conversion:           GAME       ->   WriteableBitmap (or ImageNotFoundPath)
         ///                         OR
-        ///                             ImagePath  ->   WriteableBitmap (or NO_PICTURE)
+        ///                             ImagePath  ->   WriteableBitmap (or ImageNotFoundPath)
         /// </summary>
         /// <param name="parameter">The height of a thumbnail image, or null if the original image should be returned</param>
         /// <returns></returns>
@@ -23,7 +24,6 @@ namespace GameLauncher.Converters
 
             Game game = value as Game;
 
-            // if the object of conversion is GAME
             if (game == null)
             {
                 if (imagePath == null)
@@ -36,9 +36,9 @@ namespace GameLauncher.Converters
                 imagePath = game.ImagePath;
             }
 
-            if (!System.IO.File.Exists(imagePath))
+            if (!File.Exists(imagePath))
             {
-                return NO_PICTURE;
+                return ImageNotFoundPath;
             }
 
             if (parameter == null)
@@ -48,7 +48,7 @@ namespace GameLauncher.Converters
             
             // optimization: reduce original image (set DecodePixelHeight property)
             // and release the original image by returning new WriteableBitmap
-            BitmapImage bi = new BitmapImage();
+            var bi = new BitmapImage();
             bi.BeginInit();
             bi.CacheOption = BitmapCacheOption.OnLoad;
             bi.CreateOptions = BitmapCreateOptions.IgnoreImageCache;

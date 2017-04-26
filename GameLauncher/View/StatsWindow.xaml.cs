@@ -20,7 +20,10 @@ namespace GameLauncher.View
         {
             var listView = sender as ListView;
             if (listView == null)
+            {
                 return;
+            }
+
             var gridView = listView.View as GridView;
             gridView.Columns[3].Width = 
                 listView.ActualWidth - SystemParameters.VerticalScrollBarWidth - 220;
