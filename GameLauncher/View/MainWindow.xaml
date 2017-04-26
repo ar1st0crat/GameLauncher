@@ -18,15 +18,6 @@
     <Window.Resources>
         <!-- converters -->
         <converters:PictogramConverter x:Key="PictogramConverter" />
-        <converters:PictogramStyleConverter x:Key="PictogramStyleConverter" />
-        
-        <!-- index constants (image positions in grid control) -->
-        <sys:Int32 x:Key="Index0">0</sys:Int32>
-        <sys:Int32 x:Key="Index1">1</sys:Int32>
-        <sys:Int32 x:Key="Index2">2</sys:Int32>
-        <sys:Int32 x:Key="Index3">3</sys:Int32>
-        <sys:Int32 x:Key="Index4">4</sys:Int32>
-        <sys:Int32 x:Key="Index5">5</sys:Int32>
         
         <!-- the style of left and right buttons for switching between pages -->
         <Style x:Key="SwitchPageStyle" TargetType="Image">
@@ -61,6 +52,41 @@
                 </Trigger>
                 <Trigger Property="Text" Value="">
                     <Setter Property="Visibility" Value="Hidden" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="PictogramStyle" TargetType="Image">
+            <Setter Property="LayoutTransform">
+                <Setter.Value>
+                    <RotateTransform Angle="3" />
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <!-- when pictogram is selected -->
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Opacity" Value="1" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="15" 
+                                  ShadowDepth="7"
+                                  Color="White" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+                <!-- ordinary pictogram (unselected state) -->
+                <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                    <Setter Property="Margin" Value="5" />
+                    <Setter Property="Cursor" Value="Hand" />
+                    <Setter Property="Opacity" Value="0.5" />
+                </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="1" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect ShadowDepth="7" Color="White" />
+                        </Setter.Value>
+                    </Setter>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -115,123 +141,37 @@
                    Margin="10" 
                    Cursor="Hand" 
                    MouseDown="OnPreviousPage" />
-            
+
             <!-- main area -->
-            <Grid Grid.Column="1"
-                  VerticalAlignment="Center"
-                  Margin="20">
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                
-                <Image Grid.Row="0" Grid.Column="0" Tag="0"
-                       Source="{Binding GameList[0], Converter={StaticResource PictogramConverter}, UpdateSourceTrigger=PropertyChanged}" 
-                       MouseDown="PictogramClick"
-                       Margin="20">
-                    <Image.Style>
-                        <MultiBinding Converter="{StaticResource PictogramStyleConverter}"
-                                      ConverterParameter="{StaticResource Index0}">
-                            <Binding Path="GameList" />
-                            <Binding Path="SelectedGame" />
-                        </MultiBinding>
-                    </Image.Style>
-                </Image>
-                <TextBlock Grid.Row="0" Grid.Column="0"
-                           MaxWidth="180"
-                           Text="{Binding GameList[0].Name}"
-                           Style="{StaticResource WritingStyle}"/>
-
-                <Image Grid.Row="0" Grid.Column="1" Tag="1"
-                       Source="{Binding GameList[1], Converter={StaticResource PictogramConverter}, UpdateSourceTrigger=PropertyChanged}" 
-                       MouseDown="PictogramClick"
-                       Margin="20">
-                    <Image.Style>
-                        <MultiBinding Converter="{StaticResource PictogramStyleConverter}"
-                                      ConverterParameter="{StaticResource Index1}">
-                            <Binding Path="GameList" />
-                            <Binding Path="SelectedGame" />
-                        </MultiBinding>
-                    </Image.Style>
-                </Image>
-                <TextBlock Grid.Row="0" Grid.Column="1" 
-                           MaxWidth="180"
-                           Text="{Binding GameList[1].Name}"
-                           Style="{StaticResource WritingStyle}"/>
-
-                <Image Grid.Row="0" Grid.Column="2" Tag="2"
-                       Source="{Binding GameList[2], Converter={StaticResource PictogramConverter}, UpdateSourceTrigger=PropertyChanged}" 
-                       MouseDown="PictogramClick"
-                       Margin="20">
-                    <Image.Style>
-                        <MultiBinding Converter="{StaticResource PictogramStyleConverter}"
-                                      ConverterParameter="{StaticResource Index2}">
-                            <Binding Path="GameList" />
-                            <Binding Path="SelectedGame" />
-                        </MultiBinding>
-                    </Image.Style>
-                </Image>
-                <TextBlock Grid.Row="0" Grid.Column="2" 
-                           MaxWidth="180"
-                           Text="{Binding GameList[2].Name}"
-                           Style="{StaticResource WritingStyle}"/>
-
-                <Image Grid.Row="1" Grid.Column="0" Tag="3"
-                       Source="{Binding GameList[3], Converter={StaticResource PictogramConverter}, UpdateSourceTrigger=PropertyChanged}" 
-                       MouseDown="PictogramClick"
-                       Margin="20">
-                    <Image.Style>
-                        <MultiBinding Converter="{StaticResource PictogramStyleConverter}"
-                                      ConverterParameter="{StaticResource Index3}">
-                            <Binding Path="GameList" />
-                            <Binding Path="SelectedGame" />
-                        </MultiBinding>
-                    </Image.Style>
-                </Image>
-                <TextBlock Grid.Row="1" Grid.Column="0" 
-                           MaxWidth="180"
-                           Text="{Binding GameList[3].Name}"
-                           Style="{StaticResource WritingStyle}"/>
-
-                <Image Grid.Row="1" Grid.Column="1" Tag="4"
-                       Source="{Binding GameList[4], Converter={StaticResource PictogramConverter}, UpdateSourceTrigger=PropertyChanged}" 
-                       MouseDown="PictogramClick"
-                       Margin="20">
-                    <Image.Style>
-                        <MultiBinding Converter="{StaticResource PictogramStyleConverter}"
-                                      ConverterParameter="{StaticResource Index4}">
-                            <Binding Path="GameList" />
-                            <Binding Path="SelectedGame" />
-                        </MultiBinding>
-                    </Image.Style>
-                </Image>
-                <TextBlock Grid.Row="1" Grid.Column="1" 
-                           MaxWidth="180"
-                           Text="{Binding GameList[4].Name}"
-                           Style="{StaticResource WritingStyle}"/>
-
-                <Image Grid.Row="1" Grid.Column="2" Tag="5"
-                       Source="{Binding GameList[5], Converter={StaticResource PictogramConverter}, UpdateSourceTrigger=PropertyChanged}" 
-                       MouseDown="PictogramClick"
-                       Margin="20">
-                    <Image.Style>
-                        <MultiBinding Converter="{StaticResource PictogramStyleConverter}"
-                                      ConverterParameter="{StaticResource Index5}">
-                            <Binding Path="GameList" />
-                            <Binding Path="SelectedGame" />
-                        </MultiBinding>
-                    </Image.Style>
-                </Image>
-                <TextBlock Grid.Row="1" Grid.Column="2" 
-                           MaxWidth="180"
-                           Text="{Binding GameList[5].Name}"
-                           Style="{StaticResource WritingStyle}"/>
-            </Grid>
+            <ItemsControl Grid.Column="1"
+                          ItemsSource="{Binding GameCells}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="2" Columns="3" 
+                                     HorizontalAlignment="Center" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Image Grid.Row="{Binding Row}"
+                                   Grid.Column="{Binding Column}" 
+                                   Tag="{Binding GameNo}"
+                                   Source="{Binding Game, 
+                                            Converter={StaticResource PictogramConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                   Style="{StaticResource PictogramStyle}"
+                                   MouseDown="PictogramClick"
+                                   Margin="20">
+                            </Image>
+                            <TextBlock Grid.Row="{Binding Row}" 
+                                       Grid.Column="{Binding Column}"
+                                       Text="{Binding Game.Name}"
+                                       Style="{StaticResource WritingStyle}"
+                                       MaxWidth="180" />
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
             
             <!-- navigate right -->
             <Image Grid.Column="2" 
@@ -245,7 +185,7 @@
                     <ScaleTransform ScaleX="-1" />
                 </Image.RenderTransform>
             </Image>
-
+            
             <Label Grid.Column="1" 
                        Width="600" Height="100"
                        FontSize="20"

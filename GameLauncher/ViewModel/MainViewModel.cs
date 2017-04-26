@@ -29,7 +29,18 @@ namespace GameLauncher.ViewModel
                 OnPropertyChanged("GameList");
             }
         }
-        
+
+        private List<GameViewModel> _gameCells = new List<GameViewModel>();
+        public List<GameViewModel> GameCells
+        {
+            get { return _gameCells; }
+            set
+            {
+                _gameCells = value;
+                OnPropertyChanged("GameCells");
+            }
+        }
+
         private Game _selectedGame;
         public Game SelectedGame
         {
@@ -72,7 +83,7 @@ namespace GameLauncher.ViewModel
         // WINAPI-like constants:
         private const int SW_HIDE = 0;
         private const int SW_SHOWNORMAL = 1;
-        //private const int SW_SHOWMINIMIZED = 2;
+        private const int SW_SHOWMINIMIZED = 2;
 
         // timer:
         private readonly DispatcherTimer _timer = new DispatcherTimer();
@@ -122,6 +133,16 @@ namespace GameLauncher.ViewModel
             LoadGamesFromDatabase();
         }
 
+        /// <summary>
+        /// Update view models of games in the main area of a window
+        /// </summary>
+        private void UpdateGameCells()
+        {
+            GameCells = GameList.Take(GamesPerPage)
+                                .Select((g, idx) => new GameViewModel { Game = g, GameNo = idx, Row = idx / 3, Column = idx % 3 })
+                                .ToList();
+        }
+
         #region settings and stats
 
         public void SetupDevices()
@@ -166,6 +187,8 @@ namespace GameLauncher.ViewModel
             {
                 var db = new GameRepository();
                 GameList = db.LoadGames(_pageStartPosition, GamesPerPage + 1);
+
+                UpdateGameCells();
             }
             catch (Exception ex)
             {
@@ -319,6 +342,9 @@ namespace GameLauncher.ViewModel
 
         public void SelectGame(int picIndex)
         {
+            // clear all selections anyway
+            GameCells.ForEach(g => g.IsSelected = false);
+
             if (picIndex == -1)
             {
                 SelectedGame = null;
@@ -327,6 +353,7 @@ namespace GameLauncher.ViewModel
             else
             {
                 SelectedGame = GameList[picIndex];
+                GameCells[picIndex].IsSelected = true;
                 _selectedIndex = _pageStartPosition + picIndex;
             }
         }
@@ -428,7 +455,7 @@ namespace GameLauncher.ViewModel
 
             // =============================================== prepare for recording
             // TODO: introduce PathManager
-            var filename = String.Format("{0}_{1}.avi",
+            var filename = string.Format("{0}_{1}.avi",
                 DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss"),
                 SelectedGame.Name);
 

@@ -1,6 +1,6 @@
 # GameLauncher
 
-> The **GameLauncher** app was initially ordered by a company who wanted to let a potential customer/gamer play short demos of some limited collection of games before they could buy them and record video of their reactions and behaviour for later study.
+> The **GameLauncher** app was initially ordered by a company who wanted to let potential customers/gamers play short demos of some limited collection of games before they could buy them and record video of their reactions and behaviour for later study.
 
 Main features are:
 - Administrators should register first. The app stores their logins and encrypted passwords in Windows Registry
@@ -9,7 +9,7 @@ Main features are:
 - After a user launches selected game, the app starts recording video from a webcam (if it's available) of him/her playing the game. After some short trial period of time (specified by an administrator for each game) the app interrupts the process and proposes to buy the full version of the game. Info about each launch of a game is also recorded to the log.
 - Administrators can view logs, filter log data by games and their launch dates
 
-*Just a "humble" note about the MVVM-ness of code: check out those empty views and bindable view helpers! :-)*
+*Just a "humble" note about the MVVM-ness of code: check out those empty view's code-behinds and bindable view helpers! :-)*
 
 Requirements:
 * Windows OS
