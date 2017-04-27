@@ -18,7 +18,8 @@ namespace GameLauncher.ViewModel
 {
     class MainViewModel : INotifyPropertyChanged
     {
-        // games:
+        #region games
+
         private List<Game> _gameList = new List<Game>();
         public List<Game> GameList
         {
@@ -55,8 +56,11 @@ namespace GameLauncher.ViewModel
         private int _selectedIndex = -1;
         private int _playingGameId;
 
+        #endregion
+
         // pagination:
         private const int GamesPerPage = 6;
+        private const int GamesPerRow = 3;
         private int _pageStartPosition = 0;
 
         // message to show while some operation is pending
@@ -89,12 +93,14 @@ namespace GameLauncher.ViewModel
         private readonly DispatcherTimer _timer = new DispatcherTimer();
         private int _elapsedTime;
         private int _duration;
-        
-        // commands:
+
+        #region commands:
+
         public ICommand PrevPageCommand { get; private set; }
         public ICommand NextPageCommand { get; private set; }
         public ICommand PrevGameCommand { get; private set; }
         public ICommand NextGameCommand { get; private set; }
+        public ICommand SelectGameCommand { get; private set; }
         public ICommand StartGameCommand { get; private set; }
         public ICommand AddGameCommand { get; private set; }
         public ICommand EditGameCommand { get; private set; }
@@ -102,6 +108,9 @@ namespace GameLauncher.ViewModel
         public ICommand DeviceListCommand { get; private set; }
         public ICommand StatsCommand { get; private set; }
         public ICommand SettingsCommand { get; private set; }
+        public ICommand CloseCommand { get; private set; }
+
+        #endregion
 
 
         public MainViewModel()
@@ -110,6 +119,7 @@ namespace GameLauncher.ViewModel
             NextPageCommand = new RelayCommand(ShowNextPage);
             PrevGameCommand = new RelayCommand(SelectPreviousGame);
             NextGameCommand = new RelayCommand(SelectNextGame);
+            SelectGameCommand = new RelayCommand(SelectGame);
             StartGameCommand = new RelayCommand(StartGame);
             AddGameCommand = new RelayCommand(AddGame);
             EditGameCommand = new RelayCommand(EditGame);
@@ -117,7 +127,12 @@ namespace GameLauncher.ViewModel
             DeviceListCommand = new RelayCommand(SetupDevices);
             StatsCommand = new RelayCommand(Stats);
             SettingsCommand = new RelayCommand(EditSettings);
+            CloseCommand = new RelayCommand(CleanUp);
+
+            // yes, it's a kinda hack
+            Application.Current.MainWindow.Closing += (sender, e) => CleanUp();
             
+            // set things up
             if (!_webCamRecorder.Initialize())
             {
                 MessageBox.Show(
@@ -138,8 +153,17 @@ namespace GameLauncher.ViewModel
         /// </summary>
         private void UpdateGameCells()
         {
+            int selectedId = (SelectedGame != null) ? SelectedGame.Id :- 1;
+
             GameCells = GameList.Take(GamesPerPage)
-                                .Select((g, idx) => new GameViewModel { Game = g, GameNo = idx, Row = idx / 3, Column = idx % 3 })
+                                .Select((g, idx) => new GameViewModel
+                                {
+                                    Game = g,
+                                    GameNo = idx,
+                                    Row = idx / GamesPerRow,
+                                    Column = idx % GamesPerRow,
+                                    IsSelected = (g.Id == selectedId)
+                                })
                                 .ToList();
         }
 
@@ -340,8 +364,10 @@ namespace GameLauncher.ViewModel
 
         #region game navigation
 
-        public void SelectGame(int picIndex)
+        public void SelectGame(object param)
         {
+            int picIndex = (int)param;
+
             // clear all selections anyway
             GameCells.ForEach(g => g.IsSelected = false);
 
@@ -454,7 +480,7 @@ namespace GameLauncher.ViewModel
             _playingGameId = SelectedGame.Id;
 
             // =============================================== prepare for recording
-            // TODO: introduce PathManager
+            // TODO: introduce PathManager class
             var filename = string.Format("{0}_{1}.avi",
                 DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss"),
                 SelectedGame.Name);

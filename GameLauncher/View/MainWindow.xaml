@@ -6,10 +6,8 @@
         xmlns:command="clr-namespace:GameLauncher.Command"
         xmlns:viewModel="clr-namespace:GameLauncher.ViewModel"
         Style="{StaticResource AppWindowStyle}"
-        Title="Игры" 
-        Width="1000" Height="720"
-        MouseDown="MainWindow_OnMouseDown"
-        PreviewKeyDown="MainWindow_OnPreviewKeyDown">
+        Title="Игры"
+        Width="1000" Height="720">
     
     <Window.DataContext>
         <viewModel:MainViewModel />
@@ -104,6 +102,11 @@
                                 Command="{Binding StartGameCommand}" />
         <command:CommandWrapper x:Key="DeleteGameCommand"
                                 Command="{Binding DeleteGameCommand}" />
+        <command:CommandWrapper x:Key="SelectGameCommand"
+                                Command="{Binding SelectGameCommand}" />
+        
+        <sys:Int32 x:Key="DeselectedGameNo"> -1 </sys:Int32>
+        
     </Window.Resources>
     
     <!-- Keyboard command bindings -->
@@ -120,8 +123,10 @@
         <KeyBinding Command="{StaticResource NextGameCommand}" Key="Right"/>
         <KeyBinding Command="{StaticResource StartGameCommand}" Key="Enter"/>
         <KeyBinding Command="{StaticResource DeleteGameCommand}" Key="Delete"/>
+        <MouseBinding Command="{StaticResource SelectGameCommand}" Gesture="LeftClick"
+                      CommandParameter="{StaticResource DeselectedGameNo}" />
     </Window.InputBindings>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -139,8 +144,11 @@
                    Source="../images/arrow-left.png"
                    Style="{StaticResource SwitchPageStyle}"
                    Margin="10" 
-                   Cursor="Hand" 
-                   MouseDown="OnPreviousPage" />
+                   Cursor="Hand">
+                <Image.InputBindings>
+                    <MouseBinding Gesture="LeftClick" Command="{Binding PrevPageCommand}" />
+                </Image.InputBindings>
+            </Image>
 
             <!-- main area -->
             <ItemsControl Grid.Column="1"
@@ -160,8 +168,17 @@
                                    Source="{Binding Game, 
                                             Converter={StaticResource PictogramConverter}, UpdateSourceTrigger=PropertyChanged}"
                                    Style="{StaticResource PictogramStyle}"
-                                   MouseDown="PictogramClick"
                                    Margin="20">
+                                
+                                <Image.InputBindings>
+                                    <MouseBinding Gesture="LeftClick"
+                                                  Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
+                                                            Path=DataContext.SelectGameCommand}"
+                                                  CommandParameter="{Binding GameNo}" />
+                                    <MouseBinding Gesture="LeftDoubleClick"
+                                                  Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}, 
+                                                            Path=DataContext.StartGameCommand}" />
+                                </Image.InputBindings>
                             </Image>
                             <TextBlock Grid.Row="{Binding Row}" 
                                        Grid.Column="{Binding Column}"
@@ -179,11 +196,13 @@
                    Style="{StaticResource SwitchPageStyle}"
                    Margin="10"
                    Cursor="Hand" 
-                   RenderTransformOrigin="0.5,0.5"
-                   MouseDown="OnNextPage">
+                   RenderTransformOrigin="0.5,0.5">
                 <Image.RenderTransform>
                     <ScaleTransform ScaleX="-1" />
                 </Image.RenderTransform>
+                <Image.InputBindings>
+                    <MouseBinding Gesture="LeftClick" Command="{Binding NextPageCommand}" />
+                </Image.InputBindings>
             </Image>
             
             <Label Grid.Column="1" 

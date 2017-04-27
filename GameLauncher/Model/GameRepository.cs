@@ -26,13 +26,13 @@ namespace GameLauncher.Model
             }
         }
 
-        public void PopulateStub()
+        public void PopulateStub(int recordCount, DateTime startingTime)
         {
             using (var db = new SQLiteConnection(DbFilename, false))
             {
                 var games = Enumerable.Range(1, 20).Select(i => new Game
                 {
-                    Name = String.Format("Game{0}", i),
+                    Name = string.Format("Game{0}", i),
                     ImagePath = "",
                     ExePath = "",
                     Duration = 45
@@ -41,17 +41,16 @@ namespace GameLauncher.Model
                 db.InsertAll(games);
 
                 var rnd = new Random();
-                var startTime = new DateTime(2016, 5, 1);
 
-                for (int i = 0; i < 5000; i++)
+                for (int i = 0; i < recordCount; i++)
                 {
-                    startTime = startTime.AddMinutes(rnd.Next(15, 46));
+                    startingTime = startingTime.AddMinutes(rnd.Next(15, 46));
 
                     var launch = new Launch
                     {
                         GameId = games[rnd.Next() % games.Count].Id,
-                        LaunchTime = startTime,
-                        QuitTime = startTime.AddSeconds(45)
+                        LaunchTime = startingTime,
+                        QuitTime = startingTime.AddSeconds(45)
                     };
 
                     db.Insert(launch);

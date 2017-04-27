@@ -1,6 +1,6 @@
 # GameLauncher
 
-> The **GameLauncher** app was initially ordered by a company who wanted to let potential customers/gamers play short demos of some limited collection of games before they could buy them and record video of their reactions and behaviour for later study.
+> The **GameLauncher** app was initially ordered by a company who wanted to let potential customers/gamers play short demos of games from some limited collection before they could buy them and record video of their reactions and behaviour for later study.
 
 Main features are:
 - Administrators should register first. The app stores their logins and encrypted passwords in Windows Registry
@@ -22,3 +22,5 @@ Main window
 Log & stats
 
 ![pic2](https://github.com/ar1st0crat/GameLauncher/blob/master/Screenshots/2.png)
+
+PS. The game posters in the screenshots were replaced with covers of various albums by the prog-rock band Camel. I hope, Andy Latimer and co wouldn't mind :-)
